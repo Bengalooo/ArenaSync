@@ -1,0 +1,60 @@
+@model LoginViewModel
+@inject IConfiguration Konfiguracja
+@{
+    ViewData["Title"] = "Logowanie";
+    var kontakt = Konfiguracja["ArenaSync:KontaktEmail"] ?? ArenaSeeder.AdminEmail;
+    var mailto = $"mailto:{kontakt}?subject={Uri.EscapeDataString("Odblokowanie konta ArenaSync")}"
+        + $"&body={Uri.EscapeDataString($"Dzień dobry,\nproszę o odblokowanie mojego konta w ArenaSync: {Model?.Email}\n")}";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-5">
+        <div class="card">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Logowanie</h1>
+                <form asp-action="Login" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
+                    @if (ViewBag.Zablokowane == true)
+                    {
+                        <div class="alert alert-danger" role="alert" id="kontoZablokowane">
+                            <h2 class="h6 alert-heading mb-2">Konto zostało zablokowane</h2>
+                            <p class="mb-2">Po 3 nieudanych próbach logowania konto jest blokowane ze względów bezpieczeństwa.
+                                Odblokować je może tylko administrator.</p>
+                            <p class="mb-0">Napisz na adres <a href="@mailto" class="alert-link">@kontakt</a>,
+                                podając e-mail swojego konta. Administrator odblokuje konto albo ustawi nowe hasło.</p>
+                        </div>
+                    }
+                    <div asp-validation-summary="ModelOnly" class="mb-2" role="alert"></div>
+                    @if (ViewBag.Ostrzezenie == true)
+                    {
+                        <p class="small text-body-secondary" id="ostrzezenieBlokada">Uwaga: po 3 nieudanych próbach konto zostanie zablokowane
+                            i trzeba będzie poprosić administratora o odblokowanie.</p>
+                    }
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" autocomplete="username" />
+                        <span asp-validation-for="Email" class="small"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Haslo" class="form-label"></label>
+                        <input asp-for="Haslo" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="Haslo" class="small"></span>
+                    </div>
+                    <button type="submit" class="btn btn-accent w-100">Zaloguj</button>
+                </form>
+                <p class="mt-3 mb-0 small">Nie masz konta? <a asp-action="Register">Zarejestruj się jako zawodnik lub kapitan</a>.</p>
+            </div>
+        </div>
+        <section class="card mt-3" aria-labelledby="konta-testowe">
+            <div class="card-body small">
+                <h2 class="h6" id="konta-testowe">Konta testowe</h2>
+                <dl class="row mb-0">
+                    <dt class="col-4">Administrator</dt><dd class="col-8">@ArenaSeeder.AdminEmail / @ArenaSeeder.AdminHaslo</dd>
+                    <dt class="col-4">Kapitan</dt><dd class="col-8">@ArenaSeeder.KapitanEmail / @ArenaSeeder.KapitanHaslo</dd>
+                    <dt class="col-4">Zawodnik</dt><dd class="col-8 mb-0">@ArenaSeeder.ZawodnikEmail / @ArenaSeeder.ZawodnikHaslo</dd>
+                </dl>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

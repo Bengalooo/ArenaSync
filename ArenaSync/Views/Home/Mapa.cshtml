@@ -1,0 +1,51 @@
+@{ ViewData["Title"] = "Mapa serwisu"; }
+
+<h1 class="h3 mb-2">Mapa serwisu</h1>
+<p class="text-body-secondary mb-4">Wszystkie strony ArenaSync i role, które mają do nich dostęp. Strony dla zalogowanych wymagają konta.</p>
+
+<div class="row g-4">
+    <section class="col-md-6 col-lg-3" aria-labelledby="mapa-gosc">
+        <h2 class="h5" id="mapa-gosc">Dla każdego</h2>
+        <ul>
+            <li><a asp-controller="Home" asp-action="Index">Strona główna</a></li>
+            <li><a asp-controller="Account" asp-action="Login">Logowanie</a></li>
+            <li><a asp-controller="Account" asp-action="Register">Rejestracja (zawodnik, kapitan)</a></li>
+            <li><a asp-controller="Home" asp-action="Prywatnosc">Polityka prywatności i cookies</a></li>
+            <li><a asp-controller="Home" asp-action="Dostepnosc">Deklaracja dostępności</a></li>
+            <li>Mapa serwisu (ta strona)</li>
+        </ul>
+    </section>
+    <section class="col-md-6 col-lg-3" aria-labelledby="mapa-zawodnik">
+        <h2 class="h5" id="mapa-zawodnik">Zawodnik (każdy zalogowany)</h2>
+        <ul>
+            <li><a asp-controller="Home" asp-action="Index">Mój panel</a>: najbliższy mecz, tabela</li>
+            <li><a asp-controller="Turnieje" asp-action="Index">Turnieje</a> → szczegóły, tabela, terminarz</li>
+            <li><a asp-controller="Mecze" asp-action="Index">Terminarz i wyniki</a></li>
+            <li><a asp-controller="Druzyny" asp-action="Index">Drużyny</a> → skład drużyny</li>
+            <li><a asp-controller="Zawodnicy" asp-action="Index">Zawodnicy</a></li>
+            <li><a asp-controller="Statystyki" asp-action="Index">Statystyki</a></li>
+            <li><a asp-controller="Uwagi" asp-action="Create">Zgłoś uwagę</a>, <a asp-controller="Uwagi" asp-action="Index">Moje zgłoszenia</a></li>
+            <li><a asp-controller="Account" asp-action="Ustawienia">Ustawienia konta</a>, <a asp-controller="Account" asp-action="ZmianaHasla">Zmiana hasła</a></li>
+        </ul>
+    </section>
+    <section class="col-md-6 col-lg-3" aria-labelledby="mapa-kapitan">
+        <h2 class="h5" id="mapa-kapitan">Kapitan (dodatkowo)</h2>
+        <ul>
+            <li><a asp-controller="Druzyny" asp-action="Create">Zgłoszenie drużyny</a></li>
+            <li>Edycja danych swojej drużyny</li>
+            <li><a asp-controller="Zawodnicy" asp-action="Create">Dodawanie zawodników</a>, numery i pozycje</li>
+            <li>Odłączanie kont członków drużyny</li>
+        </ul>
+    </section>
+    <section class="col-md-6 col-lg-3" aria-labelledby="mapa-admin">
+        <h2 class="h5" id="mapa-admin">Administrator (dodatkowo)</h2>
+        <ul>
+            <li>Panel administratora: zgłoszenia, mecze do uzupełnienia</li>
+            <li>Turnieje: tworzenie, edycja, usuwanie, generator terminarza</li>
+            <li>Drużyny: dodawanie, zatwierdzanie, usuwanie</li>
+            <li>Mecze: dodawanie, wpisywanie wyników</li>
+            <li>Użytkownicy i role: role, blokady, reset hasła</li>
+            <li>Zgłoszone uwagi: odpowiedzi i statusy</li>
+        </ul>
+    </section>
+</div>

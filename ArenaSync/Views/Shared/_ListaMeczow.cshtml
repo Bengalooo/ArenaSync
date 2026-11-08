@@ -1,0 +1,63 @@
+@model IEnumerable<Mecz>
+@{
+    var pokazTurniej = ViewData["PokazTurniej"] as bool? ?? false;
+    var podpis = ViewData["Podpis"] as string ?? "Lista meczów";
+    var wyroznij = ViewData["Wyroznij"] as HashSet<int> ?? new HashSet<int>();
+    var admin = User.IsInRole(Role.Admin);
+}
+@if (!Model.Any())
+{
+    <p class="text-body-secondary p-3 mb-0">Brak meczów.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">@podpis</caption>
+            <thead class="visually-hidden">
+                <tr>
+                    <th scope="col">Termin</th>
+                    <th scope="col">Gospodarz</th>
+                    <th scope="col">Wynik</th>
+                    <th scope="col">Gość</th>
+                    @if (admin) { <th scope="col">Akcje</th> }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var m in Model)
+                {
+                    var opisMeczu = $"{m.Gospodarz?.Nazwa} – {m.Gosc?.Nazwa}";
+                    <tr>
+                        <td class="small text-body-secondary text-nowrap">
+                            <time datetime="@m.Termin.ToString("s")">@m.Termin.ToString("dd.MM HH:mm")</time>
+                            @if (pokazTurniej) { <br /><span>@m.Turniej?.Nazwa</span> }
+                            @if (!string.IsNullOrEmpty(m.Boisko)) { <br /><span>@m.Boisko</span> }
+                        </td>
+                        <td class="text-end @(wyroznij.Contains(m.GospodarzId) ? "fw-bold" : "")">@m.Gospodarz?.Nazwa</td>
+                        <td class="text-center wynik">
+                            @if (m.Rozegrany)
+                            {
+                                <span class="text-accent" aria-hidden="true">@m.BramkiGospodarza : @m.BramkiGoscia</span>
+                                <span class="visually-hidden">wynik @m.BramkiGospodarza do @m.BramkiGoscia</span>
+                            }
+                            else
+                            {
+                                <span class="text-body-secondary" aria-hidden="true">– : –</span>
+                                <span class="visually-hidden">mecz jeszcze nierozegrany</span>
+                            }
+                        </td>
+                        <td class="@(wyroznij.Contains(m.GoscId) ? "fw-bold" : "")">@m.Gosc?.Nazwa</td>
+                        @if (admin)
+                        {
+                            <td class="text-end text-nowrap">
+                                <a class="btn btn-accent btn-sm" asp-controller="Mecze" asp-action="Wynik" asp-route-id="@m.IdMeczu">Wynik<span class="visually-hidden">: @opisMeczu</span></a>
+                                <a class="btn btn-outline-light btn-sm" asp-controller="Mecze" asp-action="Edit" asp-route-id="@m.IdMeczu">Edytuj<span class="visually-hidden"> mecz @opisMeczu</span></a>
+                                <a class="btn btn-outline-danger btn-sm" asp-controller="Mecze" asp-action="Delete" asp-route-id="@m.IdMeczu">Usuń<span class="visually-hidden"> mecz @opisMeczu</span></a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
