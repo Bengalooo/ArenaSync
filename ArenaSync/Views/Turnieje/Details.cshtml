@@ -1,0 +1,119 @@
+@model Turniej
+@{
+    ViewData["Title"] = Model.Nazwa;
+    var admin = User.IsInRole(Role.Admin);
+    var tabela = (List<WierszTabeli>)ViewBag.Tabela;
+    var zgloszenia = Model.Druzyny.Where(d => !d.Zatwierdzona).ToList();
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div>
+        <span class="badge bg-accent mb-2">@Model.Status.NazwaWyswietlana()</span>
+        <h1 class="h3 mb-1">@Model.Nazwa</h1>
+        <p class="text-body-secondary mb-0">
+            @Model.Dyscyplina · @Model.Lokalizacja ·
+            @Model.DataRozpoczecia.ToString("d MMM yyyy") – @Model.DataZakonczenia.ToString("d MMM yyyy")
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        @if (Model.Status == StatusTurnieju.ZapisyOtwarte && User.IsInRole(Role.Kapitan))
+        {
+            <a class="btn btn-accent" asp-controller="Druzyny" asp-action="Create" asp-route-turniejId="@Model.IdTurnieju">Zgłoś drużynę</a>
+        }
+        @if (admin)
+        {
+            <a class="btn btn-outline-light" asp-action="Edit" asp-route-id="@Model.IdTurnieju">Edytuj</a>
+            <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.IdTurnieju">Usuń</a>
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Opis))
+{
+    <p>@Model.Opis</p>
+}
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card mb-4">
+            <div class="card-header">Tabela</div>
+            <div class="card-body p-0"><partial name="_Tabela" model="tabela" /></div>
+        </div>
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Terminarz i wyniki</span>
+                @if (admin)
+                {
+                    <a class="btn btn-outline-accent btn-sm" asp-controller="Mecze" asp-action="Create" asp-route-turniejId="@Model.IdTurnieju">+ Mecz</a>
+                }
+            </div>
+            <div class="card-body p-0">
+                <partial name="_ListaMeczow" model="Model.Mecze.OrderBy(m => m.Termin)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        @if (admin)
+        {
+            <div class="card mb-4">
+                <div class="card-header">Generator terminarza</div>
+                <div class="card-body">
+                    <p class="small text-body-secondary">
+                        Tworzy mecze „każdy z każdym” dla zatwierdzonych drużyn. Mecze bez wyniku zostaną zastąpione,
+                        rozegrane pozostają bez zmian.
+                    </p>
+                    <form asp-action="GenerujTerminarz" asp-route-id="@Model.IdTurnieju" method="post" class="row g-2">
+                        <div class="col-12">
+                            <label class="form-label small" for="start">Pierwszy mecz</label>
+                            <input class="form-control" type="datetime-local" id="start" name="start" value="@Model.DataRozpoczecia.AddHours(10).ToString("yyyy-MM-ddTHH:mm")" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small" for="odstepMinut">Co ile minut</label>
+                            <input class="form-control" type="number" min="10" max="240" id="odstepMinut" name="odstepMinut" value="45" />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small" for="boisko">Boisko</label>
+                            <input class="form-control" id="boisko" name="boisko" value="Boisko A" />
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-accent w-100">Generuj terminarz</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+
+        <div class="card mb-4">
+            <div class="card-header">Drużyny (@Model.Druzyny.Count(d => d.Zatwierdzona) / @Model.MaksLiczbaDruzyn)</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var d in Model.Druzyny.Where(d => d.Zatwierdzona).OrderBy(d => d.Nazwa))
+                {
+                    <li class="list-group-item bg-transparent d-flex justify-content-between">
+                        <a asp-controller="Druzyny" asp-action="Details" asp-route-id="@d.IdDruzyny">@d.Nazwa</a>
+                        <span class="text-body-secondary small">@d.Miasto</span>
+                    </li>
+                }
+            </ul>
+        </div>
+
+        @if (admin && zgloszenia.Any())
+        {
+            <div class="card border-warning">
+                <div class="card-header">Zgłoszenia do zatwierdzenia</div>
+                <ul class="list-group list-group-flush">
+                    @foreach (var d in zgloszenia)
+                    {
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">
+                            <a asp-controller="Druzyny" asp-action="Details" asp-route-id="@d.IdDruzyny">@d.Nazwa</a>
+                            <form asp-controller="Druzyny" asp-action="Zatwierdz" asp-route-id="@d.IdDruzyny" method="post">
+                                <button type="submit" class="btn btn-success btn-sm">✓ Zatwierdź<span class="visually-hidden"> drużynę @d.Nazwa</span></button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>

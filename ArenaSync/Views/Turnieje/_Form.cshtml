@@ -1,0 +1,43 @@
+@model Turniej
+<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+<div class="row g-3">
+    <div class="col-md-8">
+        <label asp-for="Nazwa" class="form-label"></label>
+        <input asp-for="Nazwa" class="form-control" />
+        <span asp-validation-for="Nazwa" class="small"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<StatusTurnieju>()" class="form-select"></select>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Dyscyplina" class="form-label"></label>
+        <input asp-for="Dyscyplina" class="form-control" />
+        <span asp-validation-for="Dyscyplina" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Lokalizacja" class="form-label"></label>
+        <input asp-for="Lokalizacja" class="form-control" />
+        <span asp-validation-for="Lokalizacja" class="small"></span>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <label asp-for="DataRozpoczecia" class="form-label"></label>
+        <input asp-for="DataRozpoczecia" class="form-control" />
+        <span asp-validation-for="DataRozpoczecia" class="small"></span>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <label asp-for="DataZakonczenia" class="form-label"></label>
+        <input asp-for="DataZakonczenia" class="form-control" />
+        <span asp-validation-for="DataZakonczenia" class="small"></span>
+    </div>
+    <div class="col-md-4">
+        <label asp-for="MaksLiczbaDruzyn" class="form-label"></label>
+        <input asp-for="MaksLiczbaDruzyn" class="form-control" />
+        <span asp-validation-for="MaksLiczbaDruzyn" class="small"></span>
+    </div>
+    <div class="col-12">
+        <label asp-for="Opis" class="form-label"></label>
+        <textarea asp-for="Opis" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Opis" class="small"></span>
+    </div>
+</div>
