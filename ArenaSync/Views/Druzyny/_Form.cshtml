@@ -1,0 +1,64 @@
+@model Druzyna
+@{ var admin = User.IsInRole(Role.Admin); }
+<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Nazwa" class="form-label"></label>
+        <input asp-for="Nazwa" class="form-control" />
+        <span asp-validation-for="Nazwa" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="TurniejId" class="form-label"></label>
+        @if (admin || Model.IdDruzyny == 0)
+        {
+            <select asp-for="TurniejId" asp-items="ViewBag.TurniejId" class="form-select">
+                <option value="">-- wybierz turniej --</option>
+            </select>
+        }
+        else
+        {
+            <select asp-for="TurniejId" asp-items="ViewBag.TurniejId" class="form-select" disabled></select>
+            <div class="form-text">Turniej może zmienić tylko admin.</div>
+        }
+        <span asp-validation-for="TurniejId" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Miasto" class="form-label"></label>
+        <input asp-for="Miasto" class="form-control" />
+        <span asp-validation-for="Miasto" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Trener" class="form-label"></label>
+        <input asp-for="Trener" class="form-control" />
+        <span asp-validation-for="Trener" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="EmailKontaktowy" class="form-label"></label>
+        <input asp-for="EmailKontaktowy" class="form-control" />
+        <span asp-validation-for="EmailKontaktowy" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Telefon" class="form-label"></label>
+        <input asp-for="Telefon" class="form-control" />
+        <span asp-validation-for="Telefon" class="small"></span>
+    </div>
+    @if (admin)
+    {
+        <div class="col-md-6">
+            <label asp-for="KapitanId" class="form-label">Kapitan (konto)</label>
+            <select asp-for="KapitanId" asp-items="(IEnumerable<SelectListItem>)ViewBag.KapitanId" class="form-select">
+                <option value="">— bez kapitana —</option>
+            </select>
+            <div class="form-text">Konta z rolą Kapitan. Rolę nadasz w „Użytkownicy i role”.</div>
+        </div>
+        <div class="col-md-6 d-flex align-items-center">
+            <div class="form-check">
+                <input asp-for="Zatwierdzona" class="form-check-input" />
+                <label asp-for="Zatwierdzona" class="form-check-label"></label>
+            </div>
+        </div>
+    }
+</div>
+<p class="small text-body-secondary mt-3 mb-0">
+    Dane kontaktowe kapitana widzi tylko admin (RODO, art. 6 ust. 1 lit. f).
+</p>

@@ -1,0 +1,87 @@
+@model IEnumerable<Druzyna>
+@{
+    ViewData["Title"] = "Drużyny";
+    var admin = User.IsInRole(Role.Admin);
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <h1 class="h3 mb-0">Drużyny</h1>
+    @if (admin)
+    {
+        <a class="btn btn-accent" asp-action="Create">+ Nowa drużyna</a>
+    }
+    else if (User.IsInRole(Role.Kapitan))
+    {
+        <a class="btn btn-accent" asp-action="Create">+ Zgłoś drużynę</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-sm-8 col-md-5">
+        <label for="filtrTurniej" class="visually-hidden">Filtruj według turnieju</label>
+        <select id="filtrTurniej" name="turniejId" asp-items="ViewBag.TurniejId" class="form-select">
+            <option value="">Wszystkie turnieje</option>
+        </select>
+    </div>
+    <div class="col-sm-8 col-md-4">
+        <label for="szukaj" class="visually-hidden">Szukaj drużyny</label>
+        <input type="search" id="szukaj" name="szukaj" value="@ViewBag.Szukaj" class="form-control" placeholder="Szukaj: nazwa, miasto, trener" />
+    </div>
+    <input type="hidden" name="sort" value="@Context.Request.Query["sort"]" />
+    <input type="hidden" name="kier" value="@Context.Request.Query["kier"]" />
+    <div class="col-auto"><button type="submit" class="btn btn-outline-accent">Filtruj</button></div>
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">Lista drużyn</caption>
+            <thead>
+                <tr>
+                    <th sortuj="nazwa">Drużyna</th>
+                    <th sortuj="miasto">Miasto</th>
+                    <th sortuj="turniej" class="d-none d-md-table-cell">Turniej</th>
+                    <th sortuj="zawodnicy" class="d-none d-md-table-cell">Zawodnicy</th>
+                    <th sortuj="status">Status</th>
+                    <th scope="col"><span class="visually-hidden">Akcje</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model)
+                {
+                    var moze = Maskowanie.MozeZarzadzac(User, d);
+                    <tr>
+                        <td><a asp-action="Details" asp-route-id="@d.IdDruzyny" class="fw-semibold">@d.Nazwa</a></td>
+                        <td>@d.Miasto</td>
+                        <td class="d-none d-md-table-cell">@d.Turniej?.Nazwa</td>
+                        <td class="d-none d-md-table-cell">@d.Zawodnicy.Count</td>
+                        <td>
+                            @if (d.Zatwierdzona) { <span class="badge badge-ok">✓ Zatwierdzona</span> }
+                            else { <span class="badge badge-czeka">⏳ Oczekuje</span> }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            @if (admin && !d.Zatwierdzona)
+                            {
+                                <form asp-action="Zatwierdz" asp-route-id="@d.IdDruzyny" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">✓ Zatwierdź<span class="visually-hidden"> drużynę @d.Nazwa</span></button>
+                                </form>
+                            }
+                            @if (moze)
+                            {
+                                <a class="btn btn-outline-light btn-sm" asp-action="Edit" asp-route-id="@d.IdDruzyny">Edytuj<span class="visually-hidden"> drużynę @d.Nazwa</span></a>
+                                @if (admin)
+                                {
+                                    <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@d.IdDruzyny">Usuń<span class="visually-hidden"> drużynę @d.Nazwa</span></a>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-body-secondary">Brak drużyn.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+@model Druzyna
+@{ ViewData["Title"] = "Edycja drużyny"; }
+
+<h1 class="h3 mb-3">Edycja drużyny</h1>
+<div class="card"><div class="card-body">
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="IdDruzyny" />
+        <partial name="_Form" model="Model" />
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-accent">Zapisz zmiany</button>
+            <a asp-action="Details" asp-route-id="@Model.IdDruzyny" class="btn btn-outline-light">Anuluj</a>
+        </div>
+    </form>
+</div></div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
