@@ -1,0 +1,9 @@
+@* Lista wymagań hasła odhaczana na bieżąco (wwwroot/js/site.js); model = id pola hasła *@
+@model string
+<ul class="wymagania-hasla list-unstyled small mt-2 mb-0" id="wymagania-@Model" data-haslo-dla="@Model">
+    <li data-regula="dlugosc"><span class="ikona" aria-hidden="true">○</span> co najmniej @Hasla.MinDlugosc znaków<span class="visually-hidden stan"> – niespełnione</span></li>
+    <li data-regula="mala"><span class="ikona" aria-hidden="true">○</span> mała litera<span class="visually-hidden stan"> – niespełnione</span></li>
+    <li data-regula="wielka"><span class="ikona" aria-hidden="true">○</span> wielka litera<span class="visually-hidden stan"> – niespełnione</span></li>
+    <li data-regula="cyfra"><span class="ikona" aria-hidden="true">○</span> cyfra<span class="visually-hidden stan"> – niespełnione</span></li>
+    <li data-regula="specjalny"><span class="ikona" aria-hidden="true">○</span> znak specjalny, np. ! &#64; # ?<span class="visually-hidden stan"> – niespełnione</span></li>
+</ul>

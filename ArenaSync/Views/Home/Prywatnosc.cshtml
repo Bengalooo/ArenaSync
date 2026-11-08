@@ -1,0 +1,52 @@
+@{ ViewData["Title"] = "Polityka prywatności i cookies"; }
+
+<article class="col-lg-9">
+    <h1 class="h3 mb-3">Polityka prywatności i plików cookies</h1>
+
+    <h2 class="h5 mt-4">1. Administrator danych</h2>
+    <p>Administratorem danych przetwarzanych w ArenaSync jest organizator turnieju korzystający z systemu.
+       Aplikacja powstała jako projekt zaliczeniowy w Szkole Wyższej im. Pawła Włodkowica w Płocku.</p>
+
+    <h2 class="h5 mt-4">2. Jakie dane i po co</h2>
+    <ul>
+        <li><strong>Konto użytkownika</strong> – e-mail, imię i nazwisko, hasło (przechowywane wyłącznie jako skrót kryptograficzny).</li>
+        <li><strong>Zawodnicy</strong> – imię, nazwisko, data urodzenia, pozycja, numer koszulki, drużyna.</li>
+        <li><strong>Kapitanowie drużyn</strong> – e-mail i telefon kontaktowy.</li>
+    </ul>
+    <p>Podstawą przetwarzania jest prawnie uzasadniony interes administratora (art. 6 ust. 1 lit. f RODO):
+       rejestracja drużyn, weryfikacja zawodników na boisku i prowadzenie statystyk turnieju.</p>
+
+    <h2 class="h5 mt-4">3. Ochrona danych (art. 32 RODO)</h2>
+    <ul>
+        <li>Wyniki, terminarz i składy są dostępne tylko dla zalogowanych użytkowników.</li>
+        <li>Osoby spoza drużyny widzą tylko imię i pierwszą literę nazwiska zawodnika (np. „Jan K.”).
+            Pełne dane widzą członkowie drużyny, jej kapitan i administrator.</li>
+        <li>Dane kontaktowe drużyny widzi wyłącznie jej kapitan i administrator.</li>
+        <li>Dostęp do funkcji jest ograniczony rolami (administrator, kapitan, zawodnik).</li>
+    </ul>
+
+    <h2 class="h5 mt-4">4. Pliki cookies</h2>
+    <p>Zgodnie z art. 173 Prawa telekomunikacyjnego używamy plików niezbędnych do działania serwisu oraz – za zgodą –
+       funkcjonalnych. Nie stosujemy plików reklamowych ani analitycznych.</p>
+    <div class="table-responsive">
+        <table class="table table-sm">
+            <caption>Pliki cookies i dane zapisywane w przeglądarce</caption>
+            <thead>
+                <tr><th scope="col">Nazwa</th><th scope="col">Rodzaj</th><th scope="col">Cel</th><th scope="col">Ważność</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>.AspNetCore.Identity.Application</code></td><td>niezbędny</td><td>utrzymanie sesji po zalogowaniu</td><td>sesja / 14 dni przy „Zapamiętaj mnie”</td></tr>
+                <tr><td><code>.AspNetCore.Antiforgery.*</code></td><td>niezbędny</td><td>ochrona formularzy przed atakami CSRF</td><td>sesja</td></tr>
+                <tr><td><code>.AspNetCore.Mvc.CookieTempDataProvider</code></td><td>niezbędny</td><td>komunikaty po zapisaniu formularza</td><td>sesja</td></tr>
+                <tr><td><code>ArenaSync.Zgoda</code></td><td>niezbędny</td><td>zapamiętanie wyboru dotyczącego cookies</td><td>1 rok</td></tr>
+                <tr><td><code>arenasync-dostepnosc</code> (pamięć przeglądarki)</td><td>funkcjonalny</td><td>ustawienia dostępności: motyw, rozmiar tekstu</td><td>do usunięcia; bez zgody tylko do zamknięcia karty</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <p><button type="button" class="btn btn-outline-accent" data-pokaz-cookies>Zmień ustawienia cookies</button></p>
+
+    <h2 class="h5 mt-4">5. Twoje prawa</h2>
+    <p>Masz prawo dostępu do swoich danych, ich sprostowania, usunięcia, ograniczenia przetwarzania oraz sprzeciwu.
+       Imię, nazwisko i hasło zmienisz w ustawieniach konta, a w pozostałych sprawach skontaktuj się z administratorem turnieju.
+       Przysługuje Ci też skarga do Prezesa UODO.</p>
+</article>

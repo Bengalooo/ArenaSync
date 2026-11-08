@@ -1,0 +1,100 @@
+@model PanelViewModel
+@{
+    var kapitan = Model.Rola == Role.Kapitan;
+    ViewData["Title"] = kapitan ? "Panel kapitana" : "Mój panel";
+    var mojeIds = Model.MojeDruzyny.Select(d => d.IdDruzyny).ToHashSet();
+    var pozycja = Model.Tabela.FindIndex(w => mojeIds.Contains(w.DruzynaId)) + 1;
+}
+
+<h1 class="h3 mb-1">@(kapitan ? "Panel kapitana" : "Panel zawodnika")</h1>
+<p class="text-body-secondary">Witaj, @Model.ImieNazwisko.</p>
+
+@if (!Model.MojeDruzyny.Any())
+{
+    <div class="card"><div class="card-body">
+        @if (kapitan)
+        {
+            <p>Nie prowadzisz jeszcze żadnej drużyny.</p>
+            <a class="btn btn-accent" asp-controller="Druzyny" asp-action="Create">Zgłoś drużynę</a>
+        }
+        else
+        {
+            <p class="mb-0">Twoje konto nie jest przypisane do drużyny. Poproś kapitana lub administratora o dodanie.</p>
+        }
+    </div></div>
+}
+else
+{
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <section class="card mb-4" aria-labelledby="nastepny-tytul">
+                <h2 class="card-header h6 mb-0" id="nastepny-tytul">Najbliższy mecz</h2>
+                <div class="card-body text-center">
+                    @if (Model.NastepnyMecz is Mecz m)
+                    {
+                        <p class="text-body-secondary mb-1">@m.Turniej?.Nazwa</p>
+                        <p class="h4 mb-1">@m.Gospodarz?.Nazwa <span class="text-accent">vs</span> @m.Gosc?.Nazwa</p>
+                        <p class="mb-0">
+                            <time datetime="@m.Termin.ToString("s")">@m.Termin.ToString("dddd, d MMMM yyyy, HH:mm")</time>
+                            @if (!string.IsNullOrEmpty(m.Boisko)) { <span> · @m.Boisko</span> }
+                        </p>
+                        var dni = (m.Termin.Date - DateTime.Today).Days;
+                        <p class="stat mt-3 mb-0">@(dni <= 0 ? "Dziś" : dni == 1 ? "Jutro" : $"za {dni} dni")</p>
+                    }
+                    else
+                    {
+                        <p class="mb-0 text-body-secondary">Brak zaplanowanych meczów.</p>
+                    }
+                </div>
+            </section>
+
+            @foreach (var d in Model.MojeDruzyny)
+            {
+                <section class="card mb-4" aria-labelledby="druzyna-@d.IdDruzyny">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h6 mb-0" id="druzyna-@d.IdDruzyny">@(kapitan ? "Prowadzona drużyna" : "Moja drużyna")</h2>
+                        @if (d.Zatwierdzona) { <span class="badge badge-ok">✓ Zatwierdzona</span> }
+                        else { <span class="badge badge-czeka">⏳ Oczekuje</span> }
+                    </div>
+                    <div class="card-body">
+                        <p class="h5 mb-1"><a asp-controller="Druzyny" asp-action="Details" asp-route-id="@d.IdDruzyny">@d.Nazwa</a></p>
+                        <p class="text-body-secondary mb-3">@d.Miasto · @d.Turniej?.Nazwa · zawodników: @d.Zawodnicy.Count</p>
+                        @if (kapitan)
+                        {
+                            <div class="d-flex flex-wrap gap-2">
+                                <a class="btn btn-accent btn-sm" asp-controller="Zawodnicy" asp-action="Create" asp-route-druzynaId="@d.IdDruzyny">+ Zawodnik</a>
+                                <a class="btn btn-outline-accent btn-sm" asp-controller="Druzyny" asp-action="Details" asp-route-id="@d.IdDruzyny">Kadra i członkowie</a>
+                                <a class="btn btn-outline-light btn-sm" asp-controller="Druzyny" asp-action="Edit" asp-route-id="@d.IdDruzyny">Edytuj dane</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-accent btn-sm" asp-controller="Druzyny" asp-action="Details" asp-route-id="@d.IdDruzyny">Skład drużyny</a>
+                        }
+                    </div>
+                </section>
+            }
+        </div>
+
+        <div class="col-lg-7">
+            @if (Model.Tabela.Any())
+            {
+                <section class="card mb-4" aria-labelledby="tabela-tytul">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h6 mb-0" id="tabela-tytul">Tabela: @Model.TurniejDruzyny?.Nazwa</h2>
+                        @if (pozycja > 0) { <span class="badge bg-accent">Twoja pozycja: @pozycja</span> }
+                    </div>
+                    <partial name="_Tabela" model="Model.Tabela" view-data='new ViewDataDictionary(ViewData) { { "Wyroznij", mojeIds } }' />
+                </section>
+            }
+            <section class="card mb-4" aria-labelledby="terminarz-tytul">
+                <h2 class="card-header h6 mb-0" id="terminarz-tytul">Terminarz mojej drużyny</h2>
+                <partial name="_ListaMeczow" model="Model.Nadchodzace" view-data='new ViewDataDictionary(ViewData) { { "Podpis", "Nadchodzące mecze mojej drużyny" }, { "Wyroznij", mojeIds } }' />
+            </section>
+            <section class="card" aria-labelledby="wyniki-tytul">
+                <h2 class="card-header h6 mb-0" id="wyniki-tytul">Ostatnie wyniki mojej drużyny</h2>
+                <partial name="_ListaMeczow" model="Model.OstatnieWyniki" view-data='new ViewDataDictionary(ViewData) { { "Podpis", "Ostatnie wyniki mojej drużyny" }, { "Wyroznij", mojeIds } }' />
+            </section>
+        </div>
+    </div>
+}

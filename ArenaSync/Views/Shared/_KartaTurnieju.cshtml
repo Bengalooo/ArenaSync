@@ -1,0 +1,23 @@
+@model Turniej
+@{
+    var klasa = Model.Status switch
+    {
+        StatusTurnieju.ZapisyOtwarte => "badge-ok",
+        StatusTurnieju.WTrakcie => "bg-accent",
+        _ => "bg-secondary"
+    };
+}
+<div class="card h-100">
+    <div class="card-body">
+        <span class="badge @klasa mb-2">@Model.Status.NazwaWyswietlana()</span>
+        <h3 class="h5 card-title" id="turniej-@Model.IdTurnieju">@Model.Nazwa</h3>
+        <p class="card-text small text-body-secondary mb-2">
+            @Model.Dyscyplina · @Model.Lokalizacja<br />
+            @Model.DataRozpoczecia.ToString("d MMM yyyy") – @Model.DataZakonczenia.ToString("d MMM yyyy")
+        </p>
+        <p class="small mb-0">Drużyny: <strong>@Model.Druzyny.Count(d => d.Zatwierdzona)</strong> / @Model.MaksLiczbaDruzyn</p>
+    </div>
+    <div class="card-footer bg-transparent border-0 pt-0 pb-3">
+        <a class="btn btn-outline-accent btn-sm" asp-controller="Turnieje" asp-action="Details" asp-route-id="@Model.IdTurnieju" aria-describedby="turniej-@Model.IdTurnieju">Tabela i terminarz</a>
+    </div>
+</div>

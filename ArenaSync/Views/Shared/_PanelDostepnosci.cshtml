@@ -1,0 +1,53 @@
+@* Panel ułatwień dostępu (WCAG 2.1) - zapis ustawień w przeglądarce, obsługa w wwwroot/js/site.js *@
+<div class="offcanvas offcanvas-end" tabindex="-1" id="panelDostepnosci" aria-labelledby="panelDostepnosciTytul">
+    <div class="offcanvas-header border-bottom">
+        <h2 class="offcanvas-title h5" id="panelDostepnosciTytul">Ułatwienia dostępu</h2>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Zamknij panel dostępności"></button>
+    </div>
+    <div class="offcanvas-body">
+        <fieldset class="mb-4">
+            <legend class="h6">Motyw kolorystyczny</legend>
+            <div class="form-check"><input class="form-check-input" type="radio" name="a11y-motyw" id="motyw-auto" value="auto" data-ustawienie="motyw" /><label class="form-check-label" for="motyw-auto">Automatyczny (jak w systemie)</label></div>
+            <div class="form-check"><input class="form-check-input" type="radio" name="a11y-motyw" id="motyw-ciemny" value="ciemny" data-ustawienie="motyw" /><label class="form-check-label" for="motyw-ciemny">Ciemny</label></div>
+            <div class="form-check"><input class="form-check-input" type="radio" name="a11y-motyw" id="motyw-jasny" value="jasny" data-ustawienie="motyw" /><label class="form-check-label" for="motyw-jasny">Jasny</label></div>
+            <div class="form-check"><input class="form-check-input" type="radio" name="a11y-motyw" id="motyw-kontrast" value="kontrast" data-ustawienie="motyw" /><label class="form-check-label" for="motyw-kontrast">Wysoki kontrast (dla słabo widzących)</label></div>
+        </fieldset>
+
+        <fieldset class="mb-4">
+            <legend class="h6">Rozmiar tekstu</legend>
+            <div class="form-check"><input class="form-check-input" type="radio" name="a11y-tekst" id="tekst-100" value="100" data-ustawienie="tekst" /><label class="form-check-label" for="tekst-100">Normalny (100%)</label></div>
+            <div class="form-check"><input class="form-check-input" type="radio" name="a11y-tekst" id="tekst-125" value="125" data-ustawienie="tekst" /><label class="form-check-label" for="tekst-125" style="font-size:1.15em">Duży (125%)</label></div>
+            <div class="form-check"><input class="form-check-input" type="radio" name="a11y-tekst" id="tekst-150" value="150" data-ustawienie="tekst" /><label class="form-check-label" for="tekst-150" style="font-size:1.3em">Bardzo duży (150%)</label></div>
+        </fieldset>
+
+        <fieldset class="mb-4">
+            <legend class="h6">Dodatkowe ułatwienia</legend>
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="a11y-daltonizm" data-ustawienie="daltonizm" aria-describedby="a11y-daltonizm-opis" />
+                <label class="form-check-label" for="a11y-daltonizm">Tryb dla daltonistów</label>
+                <div class="form-text" id="a11y-daltonizm-opis">Niebiesko-pomarańczowe kolory statusów zamiast zielono-czerwonych.</div>
+            </div>
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="a11y-linki" data-ustawienie="linki" />
+                <label class="form-check-label" for="a11y-linki">Podkreślaj wszystkie linki</label>
+            </div>
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="a11y-odstepy" data-ustawienie="odstepy" aria-describedby="a11y-odstepy-opis" />
+                <label class="form-check-label" for="a11y-odstepy">Większe odstępy w tekście</label>
+                <div class="form-text" id="a11y-odstepy-opis">Ułatwia czytanie, np. przy dysleksji.</div>
+            </div>
+            <div class="form-check form-switch mb-2">
+                <input class="form-check-input" type="checkbox" role="switch" id="a11y-animacje" data-ustawienie="animacje" />
+                <label class="form-check-label" for="a11y-animacje">Wyłącz animacje</label>
+            </div>
+        </fieldset>
+
+        <button type="button" class="btn btn-outline-accent w-100 mb-3" id="a11y-reset">Przywróć ustawienia domyślne</button>
+
+        <p class="small text-body-secondary mb-0">
+            Strona obsługuje czytniki ekranu (NVDA, JAWS, VoiceOver) i nawigację klawiaturą: <kbd>Tab</kbd> przechodzi
+            między elementami, a pierwszy <kbd>Tab</kbd> pokazuje link „Przejdź do treści”.
+            <a asp-controller="Home" asp-action="Dostepnosc">Więcej w deklaracji dostępności</a>.
+        </p>
+    </div>
+</div>

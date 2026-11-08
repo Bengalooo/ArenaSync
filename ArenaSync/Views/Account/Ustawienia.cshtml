@@ -1,0 +1,45 @@
+@model UstawieniaViewModel
+@{
+    ViewData["Title"] = "Ustawienia konta";
+    var role = (IList<string>)ViewBag.Role;
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h1 class="h3 mb-3">Ustawienia konta</h1>
+        <div class="card mb-3"><div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-4">E-mail</dt><dd class="col-sm-8">@User.Identity?.Name</dd>
+                <dt class="col-sm-4">Rola</dt><dd class="col-sm-8">@string.Join(", ", role.Select(Role.Nazwa))</dd>
+                @if (ViewBag.Druzyna is string druzyna)
+                {
+                    <dt class="col-sm-4">Drużyna</dt><dd class="col-sm-8 mb-0">@druzyna</dd>
+                }
+            </dl>
+        </div></div>
+
+        <div class="card"><div class="card-body">
+            <form asp-action="Ustawienia" method="post">
+                <div asp-validation-summary="ModelOnly" class="mb-2" role="alert"></div>
+                <div class="mb-4">
+                    <label asp-for="ImieNazwisko" class="form-label"></label>
+                    <input asp-for="ImieNazwisko" class="form-control" autocomplete="name" />
+                    <span asp-validation-for="ImieNazwisko" class="small"></span>
+                </div>
+                <button type="submit" class="btn btn-accent">Zapisz</button>
+            </form>
+        </div></div>
+
+        <section class="card mt-3" aria-labelledby="haslo-naglowek">
+            <div class="card-body d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <div>
+                    <h2 class="h6 mb-1" id="haslo-naglowek">Hasło</h2>
+                    <p class="small text-body-secondary mb-0">Co najmniej @Hasla.MinDlugosc znaków, mała i wielka litera, cyfra i znak specjalny.</p>
+                </div>
+                <a class="btn btn-outline-accent" asp-action="ZmianaHasla">Zmień hasło</a>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

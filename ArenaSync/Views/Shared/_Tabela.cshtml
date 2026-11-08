@@ -1,0 +1,49 @@
+@model List<WierszTabeli>
+@{ var wyroznij = ViewData["Wyroznij"] as HashSet<int> ?? new HashSet<int>(); }
+@if (!Model.Any())
+{
+    <p class="text-body-secondary p-3 mb-0">Brak zatwierdzonych drużyn.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-sm table-hover align-middle mb-0 text-center">
+            <caption class="visually-hidden">Tabela turnieju: punkty, bilans bramek i wyniki drużyn</caption>
+            <thead>
+                <tr>
+                    <th scope="col"><abbr title="Pozycja">#</abbr></th>
+                    <th scope="col" class="text-start">Drużyna</th>
+                    <th scope="col"><abbr title="Mecze rozegrane">M</abbr></th>
+                    <th scope="col"><abbr title="Wygrane">W</abbr></th>
+                    <th scope="col"><abbr title="Remisy">R</abbr></th>
+                    <th scope="col"><abbr title="Porażki">P</abbr></th>
+                    <th scope="col">Bramki</th>
+                    <th scope="col"><abbr title="Bilans bramek">+/-</abbr></th>
+                    <th scope="col"><abbr title="Punkty">Pkt</abbr></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    var w = Model[i];
+                    var moja = wyroznij.Contains(w.DruzynaId);
+                    <tr class="@(moja ? "wiersz-moj" : "")">
+                        <td>@(i + 1)</td>
+                        <th scope="row" class="text-start fw-normal">
+                            <a asp-controller="Druzyny" asp-action="Details" asp-route-id="@w.DruzynaId">@w.Druzyna</a>
+                            @if (moja) { <span class="badge bg-accent ms-1">Twoja drużyna</span> }
+                        </th>
+                        <td>@w.Mecze</td>
+                        <td>@w.Wygrane</td>
+                        <td>@w.Remisy</td>
+                        <td>@w.Porazki</td>
+                        <td>@w.BramkiZdobyte:@w.BramkiStracone</td>
+                        <td>@(w.Bilans > 0 ? "+" : "")@w.Bilans</td>
+                        <td class="fw-bold text-accent">@w.Punkty</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="small text-body-secondary px-3 py-2 mb-0">Kolejność: punkty, bilans bramek, mecze bezpośrednie, bramki zdobyte.</p>
+}

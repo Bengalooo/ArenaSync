@@ -1,0 +1,55 @@
+@{ ViewData["Title"] = "Witaj"; }
+
+<section class="hero p-4 p-md-5 mb-4" aria-labelledby="powitanie-tytul">
+    <div class="row align-items-center g-4">
+        <div class="col-lg-6 text-center">
+            <img src="~/img/logo-full.png" alt="Logo ArenaSync: stadion z piłką" width="420" />
+        </div>
+        <div class="col-lg-6">
+            <h1 id="powitanie-tytul" class="fw-bold">Turnieje piłkarskie w jednym miejscu</h1>
+            <p class="lead text-body-secondary">
+                ArenaSync porządkuje amatorskie rozgrywki od zapisów do finału: zgłoszenia drużyn, kadry,
+                terminarz, wyniki i tabele na żywo.
+            </p>
+            <div class="d-flex flex-wrap gap-2">
+                <a class="btn btn-accent btn-lg" asp-controller="Account" asp-action="Login">Zaloguj się</a>
+                <a class="btn btn-outline-accent btn-lg" asp-controller="Account" asp-action="Register">Załóż konto</a>
+            </div>
+            <p class="small text-body-secondary mt-3 mb-0">Wyniki, terminarz i składy są dostępne po zalogowaniu.</p>
+        </div>
+    </div>
+</section>
+
+<h2 class="h4 mb-3">Kto co może w ArenaSync?</h2>
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <h3 class="h5"><span aria-hidden="true">⚽</span> Zawodnik</h3>
+            <ul class="mb-0">
+                <li>terminarz i najbliższy mecz drużyny</li>
+                <li>wyniki i tabela turnieju</li>
+                <li>skład własnej drużyny</li>
+            </ul>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <h3 class="h5"><span aria-hidden="true">🧢</span> Kapitan</h3>
+            <ul class="mb-0">
+                <li>zgłoszenie drużyny do turnieju</li>
+                <li>dodawanie zawodników, numery i pozycje</li>
+                <li>zarządzanie kontami członków drużyny</li>
+            </ul>
+        </div></div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100"><div class="card-body">
+            <h3 class="h5"><span aria-hidden="true">🏆</span> Administrator</h3>
+            <ul class="mb-0">
+                <li>turnieje, drużyny i zatwierdzanie zgłoszeń</li>
+                <li>terminarz i wpisywanie wyników</li>
+                <li>konta użytkowników i role</li>
+            </ul>
+        </div></div>
+    </div>
+</div>

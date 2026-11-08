@@ -1,0 +1,206 @@
+/* ArenaSync - kolory z logo: granat #081d38 i cyjan #3cdae6
+   Motywy i tryby dostępności ustawiane atrybutami na <html> (patrz wwwroot/js/site.js):
+   data-bs-theme="dark|light", data-kontrast="wysoki", data-tekst="125|150",
+   data-daltonizm, data-linki, data-odstepy, data-animacje="wylaczone" */
+:root {
+    --arena-navy: #081d38;
+    --arena-navy-2: #0f2a4d;
+    --arena-cyan: #3cdae6;
+    --arena-cyan-dark: #1fb8c4;
+    --skala: 1;
+    /* kolory statusów - podmieniane w trybie dla daltonistów */
+    --st-ok: #198754;
+    --st-ok-tekst: #fff;
+    --st-czeka: #ffc107;
+    --st-czeka-tekst: #000;
+    --st-blad: #dc3545;
+    --st-blad-tekst: #fff;
+}
+
+/* ---------- Motyw ciemny (domyślny) ---------- */
+[data-bs-theme="dark"] {
+    --bs-body-bg: #06162b;
+    --bs-body-color: #e8f1fa;
+    --bs-secondary-color: #b4c6da;
+    --bs-border-color: #2c4f7a;
+    --bs-link-color: var(--arena-cyan);
+    --bs-link-color-rgb: 60, 218, 230;
+    --bs-link-hover-color: #8ff0f7;
+    --bs-link-hover-color-rgb: 143, 240, 247;
+    --bs-tertiary-bg: var(--arena-navy-2);
+    --karta-bg: var(--arena-navy-2);
+    --akcent-tekst: var(--arena-cyan);
+    --hero-bg: radial-gradient(circle at 70% 20%, #12396a 0%, var(--arena-navy) 60%);
+}
+
+/* ---------- Motyw jasny ---------- */
+[data-bs-theme="light"] {
+    --bs-body-bg: #f3f7fb;
+    --bs-body-color: #0b1a33;
+    --bs-secondary-color: #3d4f66;
+    --bs-border-color: #b9c8d9;
+    --bs-link-color: #006b7a;
+    --bs-link-color-rgb: 0, 107, 122;
+    --bs-link-hover-color: #004a55;
+    --bs-link-hover-color-rgb: 0, 74, 85;
+    --karta-bg: #ffffff;
+    --akcent-tekst: #006b7a;
+    --hero-bg: linear-gradient(135deg, var(--arena-navy) 0%, #12396a 100%);
+}
+[data-bs-theme="light"] .hero { color: #fff; }
+[data-bs-theme="light"] .hero .text-body-secondary { color: #d3e2f2 !important; }
+[data-bs-theme="light"] .hero .stat { color: var(--arena-cyan); }
+[data-bs-theme="light"] .btn-outline-light { --bs-btn-color: #0b1a33; --bs-btn-border-color: #5d708a; --bs-btn-hover-bg: #0b1a33; --bs-btn-hover-color: #fff; }
+[data-bs-theme="light"] .hero .btn-outline-accent { --bs-btn-color: var(--arena-cyan); --bs-btn-border-color: var(--arena-cyan); }
+
+html { font-size: calc(15px * var(--skala)); }
+@media (min-width: 768px) { html { font-size: calc(16px * var(--skala)); } }
+html[data-tekst="125"] { --skala: 1.25; }
+html[data-tekst="150"] { --skala: 1.5; }
+
+.arena-nav { background: var(--arena-navy); border-bottom: 2px solid var(--arena-cyan); }
+.brand-text { font-weight: 800; font-style: italic; letter-spacing: .04em; color: #fff; }
+.text-accent { color: var(--akcent-tekst) !important; }
+.bg-accent { background: var(--arena-cyan) !important; color: var(--arena-navy) !important; }
+.arena-footer { background: var(--arena-navy); color: #c3d3e6; border-top: 1px solid var(--bs-border-color); }
+.arena-footer a { color: var(--arena-cyan); }
+
+.btn-accent {
+    --bs-btn-bg: var(--arena-cyan); --bs-btn-color: var(--arena-navy); --bs-btn-border-color: var(--arena-cyan);
+    --bs-btn-hover-bg: #8ff0f7; --bs-btn-hover-color: var(--arena-navy); --bs-btn-hover-border-color: #8ff0f7;
+    --bs-btn-active-bg: var(--arena-cyan-dark); --bs-btn-active-color: var(--arena-navy);
+    font-weight: 600;
+}
+.btn-outline-accent {
+    --bs-btn-color: var(--akcent-tekst); --bs-btn-border-color: var(--akcent-tekst);
+    --bs-btn-hover-bg: var(--arena-cyan); --bs-btn-hover-color: var(--arena-navy); --bs-btn-hover-border-color: var(--arena-cyan);
+    --bs-btn-active-bg: var(--arena-cyan-dark); --bs-btn-active-color: var(--arena-navy);
+}
+
+.card { background: var(--karta-bg); border-color: var(--bs-border-color); }
+.card-header { background: rgba(60, 218, 230, .08); font-weight: 600; }
+.table { --bs-table-bg: transparent; }
+.table thead th { color: var(--akcent-tekst); font-weight: 600; white-space: nowrap; }
+.wiersz-moj { background: rgba(60, 218, 230, .12); font-weight: 600; }
+
+.hero { background: var(--hero-bg); border: 1px solid var(--bs-border-color); border-radius: 1rem; }
+.hero img { max-width: 100%; height: auto; mix-blend-mode: lighten; }
+.stat { font-size: 2rem; font-weight: 800; color: var(--akcent-tekst); line-height: 1; }
+
+.wynik { font-weight: 800; font-size: 1.1rem; white-space: nowrap; }
+.wynik-duzy { width: 5rem; font-size: 2rem; text-align: center; font-weight: 800; }
+
+.form-label { font-weight: 500; }
+.field-validation-error, .validation-summary-errors { color: #ff9b9b; }
+[data-bs-theme="light"] .field-validation-error, [data-bs-theme="light"] .validation-summary-errors { color: #b02a37; }
+.input-validation-error { border-color: #ff8a8a !important; border-width: 2px; }
+
+.arena-nav .nav-link, .arena-nav .navbar-text { white-space: nowrap; }
+.arena-nav .nav-link { color: #dbe7f3; }
+.arena-nav .nav-link:hover, .arena-nav .nav-link[aria-current="page"] { color: var(--arena-cyan); }
+.arena-nav .nav-link[aria-current="page"] { text-decoration: underline; text-underline-offset: .3em; }
+
+/* Statusy - zawsze kolor + ikona + tekst (WCAG 1.4.1: informacja nie tylko kolorem) */
+.badge-ok { background: var(--st-ok); color: var(--st-ok-tekst); }
+.badge-czeka { background: var(--st-czeka); color: var(--st-czeka-tekst); }
+.badge-blad { background: var(--st-blad); color: var(--st-blad-tekst); }
+.btn-success { --bs-btn-bg: var(--st-ok); --bs-btn-border-color: var(--st-ok); --bs-btn-color: var(--st-ok-tekst); }
+
+/* ---------- Widoczny fokus (WCAG 2.4.7) ---------- */
+a:focus-visible, .btn:focus-visible, .form-control:focus-visible, .form-select:focus-visible,
+.form-check-input:focus-visible, .nav-link:focus-visible, summary:focus-visible {
+    outline: 3px solid var(--arena-cyan); outline-offset: 2px; box-shadow: none;
+}
+[data-bs-theme="light"] a:focus-visible, [data-bs-theme="light"] .btn:focus-visible { outline-color: #005f6b; }
+
+/* Link "Przejdź do treści" widoczny po fokusie klawiaturą */
+.skip-link {
+    position: absolute; left: .5rem; top: -4rem; z-index: 2000;
+    background: var(--arena-cyan); color: var(--arena-navy); padding: .6rem 1rem; border-radius: .4rem; font-weight: 700;
+}
+.skip-link:focus { top: .5rem; }
+
+/* ---------- Tryb wysokiego kontrastu (dla słabo widzących) ---------- */
+html[data-kontrast="wysoki"] {
+    --bs-body-bg: #000; --bs-body-color: #fff; --bs-secondary-color: #fff;
+    --bs-border-color: #fff; --bs-link-color: #ffff00; --bs-link-color-rgb: 255, 255, 0;
+    --bs-link-hover-color: #ffff99; --karta-bg: #000; --akcent-tekst: #ffff00; --hero-bg: #000;
+    --arena-cyan: #ffff00;
+    --st-ok: #fff; --st-ok-tekst: #000; --st-czeka: #ffff00; --st-czeka-tekst: #000; --st-blad: #ff6b6b; --st-blad-tekst: #000;
+}
+html[data-kontrast="wysoki"] body, html[data-kontrast="wysoki"] .arena-nav, html[data-kontrast="wysoki"] .arena-footer,
+html[data-kontrast="wysoki"] .card, html[data-kontrast="wysoki"] .card-header, html[data-kontrast="wysoki"] .dropdown-menu,
+html[data-kontrast="wysoki"] .modal-content, html[data-kontrast="wysoki"] .offcanvas, html[data-kontrast="wysoki"] .list-group-item {
+    background: #000 !important; color: #fff !important;
+}
+html[data-kontrast="wysoki"] .card, html[data-kontrast="wysoki"] .form-control, html[data-kontrast="wysoki"] .form-select,
+html[data-kontrast="wysoki"] .hero, html[data-kontrast="wysoki"] .modal-content { border: 2px solid #fff !important; }
+html[data-kontrast="wysoki"] .form-control, html[data-kontrast="wysoki"] .form-select { background-color: #000; color: #fff; }
+html[data-kontrast="wysoki"] .text-body-secondary, html[data-kontrast="wysoki"] .form-text, html[data-kontrast="wysoki"] .small { color: #fff !important; }
+html[data-kontrast="wysoki"] a { text-decoration: underline; }
+html[data-kontrast="wysoki"] .nav-link, html[data-kontrast="wysoki"] .brand-text, html[data-kontrast="wysoki"] .arena-footer a { color: #ffff00 !important; }
+html[data-kontrast="wysoki"] .btn { background: #000 !important; color: #ffff00 !important; border: 2px solid #ffff00 !important; }
+html[data-kontrast="wysoki"] .btn:hover, html[data-kontrast="wysoki"] .btn:focus-visible { background: #ffff00 !important; color: #000 !important; }
+html[data-kontrast="wysoki"] *:focus-visible { outline: 4px solid #ffff00 !important; outline-offset: 3px; }
+html[data-kontrast="wysoki"] .alert { background: #000; color: #fff; border: 2px solid #ffff00; }
+html[data-kontrast="wysoki"] .btn-close { filter: invert(1) grayscale(1) brightness(2); }
+
+/* ---------- Tryb dla daltonistów (paleta Okabe-Ito: niebieski / pomarańczowy / cynobrowy) ---------- */
+html[data-daltonizm] {
+    --st-ok: #0072b2; --st-ok-tekst: #fff;
+    --st-czeka: #e69f00; --st-czeka-tekst: #000;
+    --st-blad: #d55e00; --st-blad-tekst: #000;
+}
+html[data-daltonizm] .btn-outline-danger { --bs-btn-color: #f0a35e; --bs-btn-border-color: #d55e00; --bs-btn-hover-bg: #d55e00; --bs-btn-hover-color: #000; }
+html[data-daltonizm][data-bs-theme="light"] .btn-outline-danger { --bs-btn-color: #8f3f00; --bs-btn-border-color: #b34d00; --bs-btn-hover-bg: #b34d00; --bs-btn-hover-color: #fff; }
+html[data-daltonizm] .btn-danger { --bs-btn-bg: #d55e00; --bs-btn-border-color: #d55e00; --bs-btn-color: #000; }
+html[data-daltonizm] .border-danger { border-color: #d55e00 !important; }
+html[data-daltonizm] .border-warning { border-color: #e69f00 !important; }
+
+/* ---------- Podkreślanie linków ---------- */
+html[data-linki] a:not(.btn) { text-decoration: underline !important; text-underline-offset: .2em; }
+
+/* ---------- Większe odstępy (WCAG 1.4.12, łatwiejsze czytanie przy dysleksji) ---------- */
+html[data-odstepy] body { line-height: 1.8; letter-spacing: .05em; word-spacing: .12em; }
+html[data-odstepy] p { margin-bottom: 1.5em; }
+
+/* ---------- Wyłączone animacje ---------- */
+html[data-animacje="wylaczone"] *, html[data-animacje="wylaczone"] *::before, html[data-animacje="wylaczone"] *::after {
+    animation: none !important; transition: none !important; scroll-behavior: auto !important;
+}
+
+/* Pasek menu jest zawsze granatowy - jego elementy zachowują jasne kolory w każdym motywie */
+.arena-nav .text-accent { color: #3cdae6 !important; }
+[data-bs-theme="light"] .arena-nav .btn-outline-light { --bs-btn-color: #f8f9fa; --bs-btn-border-color: #f8f9fa; --bs-btn-hover-bg: #f8f9fa; --bs-btn-hover-color: #081d38; }
+[data-bs-theme="light"] .btn-outline-danger { --bs-btn-color: #a52834; --bs-btn-border-color: #a52834; --bs-btn-hover-bg: #a52834; --bs-btn-hover-color: #fff; }
+html[data-kontrast="wysoki"] .arena-nav .text-accent { color: #ffff00 !important; }
+[data-bs-theme="dark"] .btn-outline-danger { --bs-btn-color: #ff9aa4; --bs-btn-border-color: #ff6b7a; --bs-btn-hover-bg: #ff6b7a; --bs-btn-hover-color: #000; }
+html[data-kontrast="wysoki"] .navbar-toggler { border: 2px solid #ffff00; }
+html[data-kontrast="wysoki"] .navbar-toggler-icon { filter: brightness(0) saturate(100%) invert(93%) sepia(94%) saturate(2000%) hue-rotate(1deg); }
+
+/* Nieaktywny przycisk w oknie zgody (np. „Akceptuję wszystkie” przy odznaczonych plikach funkcjonalnych) */
+#oknoCookies .btn:disabled {
+    background: var(--bs-secondary-bg);
+    border-color: var(--bs-border-color);
+    color: var(--bs-secondary-color);
+    opacity: 1;
+}
+
+/* Lista wymagań hasła: spełnione reguły mają symbol ✓ i kolor statusu (nie tylko kolor) */
+.wymagania-hasla li { color: var(--bs-secondary-color); }
+.wymagania-hasla li.spelnione { color: var(--bs-body-color); font-weight: 600; }
+.wymagania-hasla .ikona { display: inline-block; width: 1.2em; }
+
+/* Nagłówki kolumn z sortowaniem */
+th a.sortuj { color: inherit; text-decoration: none; white-space: nowrap; }
+th a.sortuj:hover, th a.sortuj:focus-visible { text-decoration: underline; }
+th a.sortuj .strzalka { opacity: .55; font-size: .85em; }
+th a.sortuj.aktywny .strzalka { opacity: 1; }
+
+/* Węższe odstępy menu na ekranach 1200–1399 px, żeby wszystkie pozycje (z Statystykami) mieściły się w jednym wierszu */
+@media (min-width: 1200px) and (max-width: 1399.98px) {
+    .arena-nav .navbar-nav .nav-link { padding-left: .3rem; padding-right: .3rem; }
+}
+.arena-nav [data-bs-target="#panelDostepnosci"] { white-space: nowrap; }
+/* Menu zwinięte mimo szerokiego ekranu (site.js: ukladMenu) - przycisk Dostępność zostaje przy przycisku menu */
+.arena-nav.menu-zwiniete [data-bs-target="#panelDostepnosci"] { order: 0 !important; margin-left: auto !important; margin-right: .5rem !important; }

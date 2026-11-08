@@ -1,0 +1,62 @@
+@model PanelViewModel
+@{ ViewData["Title"] = "Panel administratora"; }
+
+<h1 class="h3 mb-1">Panel administratora</h1>
+<p class="text-body-secondary">Witaj, @Model.ImieNazwisko.</p>
+
+<div class="row g-3 mb-4 text-center">
+    <div class="col-6 col-md-3"><div class="card"><div class="card-body"><div class="stat">@Model.LiczbaTurniejow</div><a asp-controller="Turnieje" asp-action="Index">turnieje</a></div></div></div>
+    <div class="col-6 col-md-3"><div class="card"><div class="card-body"><div class="stat">@Model.LiczbaDruzyn</div><a asp-controller="Druzyny" asp-action="Index">drużyny</a></div></div></div>
+    <div class="col-6 col-md-3"><div class="card"><div class="card-body"><div class="stat">@Model.LiczbaZawodnikow</div><a asp-controller="Zawodnicy" asp-action="Index">zawodnicy</a></div></div></div>
+    <div class="col-6 col-md-3"><div class="card"><div class="card-body"><div class="stat">@Model.LiczbaUzytkownikow</div><a asp-controller="Uzytkownicy" asp-action="Index">konta</a></div></div></div>
+</div>
+
+<div class="d-flex flex-wrap gap-2 mb-4">
+    <a class="btn btn-accent" asp-controller="Turnieje" asp-action="Create">+ Turniej</a>
+    <a class="btn btn-outline-accent" asp-controller="Druzyny" asp-action="Create">+ Drużyna</a>
+    <a class="btn btn-outline-accent" asp-controller="Mecze" asp-action="Create">+ Mecz</a>
+    <a class="btn btn-outline-accent" asp-controller="Uzytkownicy" asp-action="Index">Użytkownicy i role</a>
+    <a class="btn btn-outline-accent" asp-controller="Uwagi" asp-action="Index" asp-route-status="Nowa">Nowe uwagi (@Model.UwagiNowe)</a>
+    <a class="btn btn-outline-accent" asp-controller="Statystyki" asp-action="Index">Statystyki</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <section class="card h-100 @(Model.Zgloszenia.Any() ? "border-warning" : "")" aria-labelledby="zgloszenia-tytul">
+            <h2 class="card-header h6 mb-0" id="zgloszenia-tytul">Zgłoszenia drużyn do zatwierdzenia (@Model.Zgloszenia.Count)</h2>
+            @if (!Model.Zgloszenia.Any())
+            {
+                <p class="p-3 mb-0 text-body-secondary">Brak nowych zgłoszeń.</p>
+            }
+            <ul class="list-group list-group-flush">
+                @foreach (var d in Model.Zgloszenia)
+                {
+                    <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center gap-2">
+                        <span><a asp-controller="Druzyny" asp-action="Details" asp-route-id="@d.IdDruzyny">@d.Nazwa</a><br /><small class="text-body-secondary">@d.Turniej?.Nazwa · zgłoszono @d.DataZgloszenia.ToString("d")</small></span>
+                        <form asp-controller="Druzyny" asp-action="Zatwierdz" asp-route-id="@d.IdDruzyny" asp-route-returnUrl="/" method="post">
+                            <button type="submit" class="btn btn-success btn-sm">✓ Zatwierdź<span class="visually-hidden"> drużynę @d.Nazwa</span></button>
+                        </form>
+                    </li>
+                }
+            </ul>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="card h-100" aria-labelledby="wyniki-tytul">
+            <h2 class="card-header h6 mb-0" id="wyniki-tytul">Mecze czekające na wynik</h2>
+            <partial name="_ListaMeczow" model="Model.DoUzupelnienia" view-data='new ViewDataDictionary(ViewData) { { "PokazTurniej", true }, { "Podpis", "Mecze czekające na wpisanie wyniku" } }' />
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="card h-100" aria-labelledby="nadchodzace-tytul">
+            <h2 class="card-header h6 mb-0" id="nadchodzace-tytul">Nadchodzące mecze</h2>
+            <partial name="_ListaMeczow" model="Model.Nadchodzace" view-data='new ViewDataDictionary(ViewData) { { "PokazTurniej", true }, { "Podpis", "Nadchodzące mecze" } }' />
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="card h-100" aria-labelledby="ostatnie-tytul">
+            <h2 class="card-header h6 mb-0" id="ostatnie-tytul">Ostatnie wyniki</h2>
+            <partial name="_ListaMeczow" model="Model.OstatnieWyniki" view-data='new ViewDataDictionary(ViewData) { { "PokazTurniej", true }, { "Podpis", "Ostatnie wyniki" } }' />
+        </section>
+    </div>
+</div>

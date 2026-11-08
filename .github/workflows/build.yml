@@ -1,0 +1,27 @@
+name: Build i testy
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalacja .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Przywrócenie pakietów
+        run: dotnet restore ArenaSync.sln
+
+      - name: Kompilacja
+        run: dotnet build ArenaSync.sln --no-restore -c Release
+
+      - name: Testy jednostkowe
+        run: dotnet test ArenaSync.sln --no-build -c Release --verbosity normal

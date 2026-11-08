@@ -1,0 +1,144 @@
+@{
+    var zalogowany = User.Identity?.IsAuthenticated == true;
+    var rola = User.IsInRole(Role.Admin) ? Role.Admin : User.IsInRole(Role.Kapitan) ? Role.Kapitan : User.IsInRole(Role.Zawodnik) ? Role.Zawodnik : null;
+    var imie = User.FindFirst(ArenaClaimsFactory.ImieClaim)?.Value ?? User.Identity?.Name;
+}
+<!DOCTYPE html>
+<html lang="pl" data-bs-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark light" />
+    <title>@ViewData["Title"] - ArenaSync</title>
+    <link rel="icon" href="~/favicon.ico" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    @* Ustawienia dostępności nakładane przed wyrenderowaniem strony *@
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <a href="#tresc" class="skip-link">Przejdź do treści</a>
+    <div id="a11y-komunikat" class="visually-hidden" role="status" aria-live="polite"></div>
+
+    <header>
+        <nav class="navbar navbar-expand-xl navbar-dark arena-nav" aria-label="Menu główne">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                    <img src="~/img/logo-icon.png" alt="" height="36" />
+                    <span class="brand-text">ARENA<span class="text-accent">SYNC</span></span>
+                    <span class="visually-hidden"> – strona główna</span>
+                </a>
+                @* Przycisk dostępności zawsze widoczny, także przy zwiniętym menu *@
+                <button type="button" class="btn btn-outline-light btn-sm ms-auto me-2 order-xl-last ms-xl-2 me-xl-0" data-bs-toggle="offcanvas" data-bs-target="#panelDostepnosci" aria-controls="panelDostepnosci">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:-3px"><circle cx="12" cy="4" r="2" /><path d="M21 9h-6v13h-2v-6h-2v6H9V9H3V7h18z" /></svg><span class="ms-1 d-none d-sm-inline">Dostępność</span><span class="visually-hidden d-sm-none">Dostępność</span>
+                </button>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+                        aria-controls="menu" aria-expanded="false" aria-label="Pokaż menu">
+                    <span class="navbar-toggler-icon" aria-hidden="true"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="menu">
+                    <ul class="navbar-nav me-auto">
+                        @if (zalogowany)
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Index">Mój panel</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Turnieje" asp-action="Index">Turnieje</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Mecze" asp-action="Index">Terminarz</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Druzyny" asp-action="Index">Drużyny</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Zawodnicy" asp-action="Index">Zawodnicy</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Statystyki" asp-action="Index">Statystyki</a></li>
+                        }
+                        @if (rola == Role.Kapitan)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Kapitan</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Zawodnicy" asp-action="Create">Dodaj zawodnika</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Druzyny" asp-action="Create">Zgłoś nową drużynę</a></li>
+                                </ul>
+                            </li>
+                        }
+                        @if (rola == Role.Admin)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Administracja</a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-controller="Turnieje" asp-action="Create">Nowy turniej</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Druzyny" asp-action="Create">Nowa drużyna</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Mecze" asp-action="Create">Nowy mecz</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Zawodnicy" asp-action="Create">Nowy zawodnik</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-controller="Uzytkownicy" asp-action="Index">Użytkownicy i role</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Uwagi" asp-action="Index">Zgłoszone uwagi</a></li>
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav align-items-xl-center gap-xl-2">
+                        @if (zalogowany)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="visually-hidden">Konto: @imie, rola </span><span class="badge bg-accent">@Role.Nazwa(rola ?? "")</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li><h2 class="dropdown-header h6">@imie<br /><small>@User.Identity?.Name</small></h2></li>
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="Ustawienia">Ustawienia konta</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Account" asp-action="ZmianaHasla">Zmień hasło</a></li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li><a class="dropdown-item" asp-controller="Uwagi" asp-action="Create">Zgłoś uwagę</a></li>
+                                    @if (rola != Role.Admin) { <li><a class="dropdown-item" asp-controller="Uwagi" asp-action="Index">Moje zgłoszenia</a></li> }
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form asp-controller="Account" asp-action="Logout" method="post">
+                                            <button type="submit" class="dropdown-item">Wyloguj</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Register">Załóż konto</a></li>
+                            <li class="nav-item"><a class="btn btn-accent btn-sm" asp-controller="Account" asp-action="Login">Zaloguj</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" id="tresc" tabindex="-1" class="container py-4 flex-grow-1">
+        @if (TempData["Komunikat"] is string komunikat)
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="status">
+                @komunikat
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij komunikat"></button>
+            </div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="arena-footer py-3 mt-auto">
+        <div class="container d-flex flex-column flex-md-row justify-content-between gap-2 small">
+            <span>&copy; 2026 ArenaSync – hub turniejów piłkarskich</span>
+            <nav aria-label="Informacje">
+                <a asp-controller="Home" asp-action="Prywatnosc">Polityka prywatności i cookies</a> ·
+                <a href="#" data-pokaz-cookies>Ustawienia cookies</a> ·
+                <a asp-controller="Home" asp-action="Dostepnosc">Deklaracja dostępności</a> ·
+                <a asp-controller="Home" asp-action="Mapa">Mapa serwisu</a>
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <text> · </text><a asp-controller="Uwagi" asp-action="Create">Zgłoś uwagę</a>
+                }
+            </nav>
+        </div>
+    </footer>
+
+    <partial name="_PanelDostepnosci" />
+    <partial name="_ZgodaCookies" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

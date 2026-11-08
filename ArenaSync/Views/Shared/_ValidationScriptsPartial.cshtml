@@ -1,0 +1,12 @@
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    // Bez walidacji przy opuszczaniu pola: komunikat znikający pod kursorem
+    // przesuwał przycisk "Zapisz" i pierwsze kliknięcie nie trafiało.
+    $(function () {
+        $('form').each(function () {
+            var v = $(this).data('validator');
+            if (v) v.settings.onfocusout = false;
+        });
+    });
+</script>
