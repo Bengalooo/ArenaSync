@@ -1,0 +1,52 @@
+@model IEnumerable<Mecz>
+@{ ViewData["Title"] = "Terminarz i wyniki"; }
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <h1 class="h3 mb-0">Terminarz i wyniki</h1>
+    @if (User.IsInRole(Role.Admin))
+    {
+        <a class="btn btn-accent" asp-action="Create">+ Nowy mecz</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3 align-items-end">
+    <div class="col-sm-6 col-lg-3">
+        <label for="filtrTurniej" class="form-label small mb-1">Turniej</label>
+        <select id="filtrTurniej" name="turniejId" asp-items="ViewBag.TurniejId" class="form-select">
+            <option value="">Wszystkie turnieje</option>
+        </select>
+    </div>
+    <div class="col-sm-6 col-lg-2">
+        <label for="filtrStatus" class="form-label small mb-1">Mecze</label>
+        <select id="filtrStatus" name="status" class="form-select">
+            <option value="">Wszystkie</option>
+            <option value="nadchodzace" selected="@(ViewBag.Status == "nadchodzace")">Nadchodzące</option>
+            <option value="rozegrane" selected="@(ViewBag.Status == "rozegrane")">Rozegrane</option>
+        </select>
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <label for="szukaj" class="form-label small mb-1">Szukaj</label>
+        <input type="search" id="szukaj" name="szukaj" value="@ViewBag.Szukaj" class="form-control" placeholder="Drużyna lub boisko" />
+    </div>
+    <div class="col-6 col-lg-2">
+        <label for="sort" class="form-label small mb-1">Sortuj według</label>
+        <select id="sort" name="sort" class="form-select">
+            <option value="termin" selected="@(ViewBag.Sort == null || ViewBag.Sort == "termin")">Termin</option>
+            <option value="turniej" selected="@(ViewBag.Sort == "turniej")">Turniej</option>
+            <option value="gospodarz" selected="@(ViewBag.Sort == "gospodarz")">Gospodarz</option>
+            <option value="bramki" selected="@(ViewBag.Sort == "bramki")">Liczba bramek</option>
+        </select>
+    </div>
+    <div class="col-6 col-lg-1">
+        <label for="kier" class="form-label small mb-1">Kierunek</label>
+        <select id="kier" name="kier" class="form-select">
+            <option value="asc">Rosnąco</option>
+            <option value="desc" selected="@(ViewBag.Kier == "desc")">Malejąco</option>
+        </select>
+    </div>
+    <div class="col-auto"><button type="submit" class="btn btn-outline-accent">Pokaż</button></div>
+</form>
+
+<div class="card">
+    <partial name="_ListaMeczow" model="Model" view-data='new ViewDataDictionary(ViewData) { { "PokazTurniej", true } }' />
+</div>

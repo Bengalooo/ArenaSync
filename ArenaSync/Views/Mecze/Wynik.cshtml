@@ -1,0 +1,32 @@
+@model Mecz
+@{ ViewData["Title"] = "Wynik meczu"; }
+
+@* Widok mobile-first: duże pola do szybkiego wpisania wyniku na boisku *@
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body p-4 text-center">
+                <p class="text-body-secondary mb-1">@Model.Turniej?.Nazwa · @Model.Termin.ToString("g")</p>
+                <h1 class="h4 mb-4">Wynik meczu</h1>
+                <form asp-action="Wynik" asp-route-id="@Model.IdMeczu" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                    <div class="d-flex justify-content-center align-items-center gap-3 mb-4">
+                        <div class="flex-fill">
+                            <label for="bramkiGospodarza" class="d-block fw-semibold mb-2">@Model.Gospodarz?.Nazwa</label>
+                            <input type="number" min="0" max="99" inputmode="numeric" id="bramkiGospodarza" name="bramkiGospodarza"
+                                   value="@Model.BramkiGospodarza" class="form-control wynik-duzy mx-auto" />
+                        </div>
+                        <div class="stat pt-4">:</div>
+                        <div class="flex-fill">
+                            <label for="bramkiGoscia" class="d-block fw-semibold mb-2">@Model.Gosc?.Nazwa</label>
+                            <input type="number" min="0" max="99" inputmode="numeric" id="bramkiGoscia" name="bramkiGoscia"
+                                   value="@Model.BramkiGoscia" class="form-control wynik-duzy mx-auto" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-accent btn-lg w-100">Zapisz wynik</button>
+                    <a asp-controller="Turnieje" asp-action="Details" asp-route-id="@Model.TurniejId" class="btn btn-link mt-2">Anuluj</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

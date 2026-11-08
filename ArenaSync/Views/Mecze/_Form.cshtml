@@ -1,0 +1,46 @@
+@model Mecz
+<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="TurniejId" class="form-label"></label>
+        <select asp-for="TurniejId" asp-items="ViewBag.TurniejId" class="form-select">
+            <option value="">-- wybierz turniej --</option>
+        </select>
+        <span asp-validation-for="TurniejId" class="small"></span>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <label asp-for="Termin" class="form-label"></label>
+        <input asp-for="Termin" class="form-control" />
+        <span asp-validation-for="Termin" class="small"></span>
+    </div>
+    <div class="col-sm-6 col-md-3">
+        <label asp-for="Boisko" class="form-label"></label>
+        <input asp-for="Boisko" class="form-control" />
+        <span asp-validation-for="Boisko" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="GospodarzId" class="form-label"></label>
+        <select asp-for="GospodarzId" asp-items="(IEnumerable<SelectListItem>)ViewBag.Gospodarze" class="form-select">
+            <option value="">-- wybierz drużynę --</option>
+        </select>
+        <span asp-validation-for="GospodarzId" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="GoscId" class="form-label"></label>
+        <select asp-for="GoscId" asp-items="(IEnumerable<SelectListItem>)ViewBag.Goscie" class="form-select">
+            <option value="">-- wybierz drużynę --</option>
+        </select>
+        <span asp-validation-for="GoscId" class="small"></span>
+    </div>
+    <div class="col-6 col-md-3">
+        <label asp-for="BramkiGospodarza" class="form-label"></label>
+        <input asp-for="BramkiGospodarza" class="form-control" />
+        <span asp-validation-for="BramkiGospodarza" class="small"></span>
+    </div>
+    <div class="col-6 col-md-3">
+        <label asp-for="BramkiGoscia" class="form-label"></label>
+        <input asp-for="BramkiGoscia" class="form-control" />
+        <span asp-validation-for="BramkiGoscia" class="small"></span>
+    </div>
+    <div class="col-12 small text-body-secondary">Zostaw wynik pusty, jeśli mecz jeszcze się nie odbył.</div>
+</div>
