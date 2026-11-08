@@ -1,0 +1,139 @@
+@model Druzyna
+@{
+    ViewData["Title"] = Model.Nazwa;
+    var moze = (bool)ViewBag.MozeZarzadzac;
+    var pelny = (bool)ViewBag.PelnyWglad;
+    var admin = User.IsInRole(Role.Admin);
+    var kapitan = ViewBag.Kapitan as ApplicationUser;
+    var czlonkowie = (List<ApplicationUser>)ViewBag.Czlonkowie;
+    var mecze = (List<Mecz>)ViewBag.Mecze;
+    var mojeIds = new HashSet<int> { Model.IdDruzyny };
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3">
+    <div>
+        @if (Model.Zatwierdzona) { <span class="badge badge-ok mb-2">✓ Zatwierdzona</span> }
+        else { <span class="badge badge-czeka mb-2">⏳ Oczekuje na zatwierdzenie</span> }
+        <h1 class="h3 mb-1">@Model.Nazwa</h1>
+        <p class="text-body-secondary mb-0">
+            @Model.Miasto ·
+            <a asp-controller="Turnieje" asp-action="Details" asp-route-id="@Model.TurniejId">@Model.Turniej?.Nazwa</a>
+        </p>
+    </div>
+    @if (moze)
+    {
+        <div class="d-flex flex-wrap gap-2">
+            @if (admin && !Model.Zatwierdzona)
+            {
+                <form asp-action="Zatwierdz" asp-route-id="@Model.IdDruzyny" asp-route-returnUrl="@Context.Request.Path" method="post">
+                    <button type="submit" class="btn btn-success">✓ Zatwierdź</button>
+                </form>
+            }
+            <a class="btn btn-outline-light" asp-action="Edit" asp-route-id="@Model.IdDruzyny">Edytuj dane</a>
+            @if (admin)
+            {
+                <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.IdDruzyny">Usuń drużynę</a>
+            }
+        </div>
+    }
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <section class="card mb-4" aria-labelledby="info-tytul">
+            <h2 class="card-header h6 mb-0" id="info-tytul">Informacje</h2>
+            <div class="card-body">
+                <dl class="mb-0">
+                    <dt>Trener</dt><dd>@Model.Trener</dd>
+                    <dt>Kapitan (konto)</dt><dd>@(kapitan?.ImieNazwisko ?? "— brak —")</dd>
+                    <dt>Data zgłoszenia</dt><dd>@Model.DataZgloszenia.ToString("d")</dd>
+                    @if (moze)
+                    {
+                        <dt>E-mail</dt><dd>@Model.EmailKontaktowy</dd>
+                        <dt>Telefon</dt><dd>@(Model.Telefon ?? "—")</dd>
+                    }
+                </dl>
+            </div>
+        </section>
+
+        @if (pelny)
+        {
+            <section class="card mb-4" aria-labelledby="czlonkowie-tytul">
+                <h2 class="card-header h6 mb-0" id="czlonkowie-tytul">Konta członków drużyny (@czlonkowie.Count)</h2>
+                @if (!czlonkowie.Any())
+                {
+                    <p class="p-3 mb-0 small text-body-secondary">Żaden zawodnik nie założył jeszcze konta. Zawodnicy wybierają drużynę przy rejestracji.</p>
+                }
+                <ul class="list-group list-group-flush">
+                    @foreach (var u in czlonkowie)
+                    {
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center gap-2">
+                            <span>@(u.ImieNazwisko ?? u.Email)@if (moze) { <br /><small class="text-body-secondary">@u.Email</small> }</span>
+                            @if (moze)
+                            {
+                                <form asp-action="UsunCzlonka" asp-route-id="@Model.IdDruzyny" asp-route-userId="@u.Id" method="post">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Odłącz<span class="visually-hidden"> konto @u.ImieNazwisko od drużyny</span></button>
+                                </form>
+                            }
+                        </li>
+                    }
+                </ul>
+            </section>
+        }
+    </div>
+
+    <div class="col-lg-8">
+        <section class="card mb-4" aria-labelledby="kadra-tytul">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="h6 mb-0" id="kadra-tytul">Kadra (@Model.Zawodnicy.Count)</h2>
+                @if (moze)
+                {
+                    <a class="btn btn-outline-accent btn-sm" asp-controller="Zawodnicy" asp-action="Create" asp-route-druzynaId="@Model.IdDruzyny">+ Zawodnik</a>
+                }
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <caption class="visually-hidden">Kadra drużyny @Model.Nazwa</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Nr</th><th scope="col">Zawodnik</th><th scope="col">Pozycja</th>
+                            @if (pelny) { <th scope="col">Data ur.</th> }
+                            @if (moze) { <th scope="col"><span class="visually-hidden">Akcje</span></th> }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var z in Model.Zawodnicy.OrderBy(z => z.NumerKoszulki))
+                        {
+                            <tr>
+                                <td class="fw-bold text-accent">@z.NumerKoszulki</td>
+                                <th scope="row" class="fw-normal">@(pelny ? z.PelneImie : Maskowanie.Nazwisko(z.Imie, z.Nazwisko))</th>
+                                <td>@z.Pozycja.NazwaWyswietlana()</td>
+                                @if (pelny) { <td>@z.DataUrodzenia.ToString("d")</td> }
+                                @if (moze)
+                                {
+                                    <td class="text-end text-nowrap">
+                                        <a class="btn btn-outline-light btn-sm" asp-controller="Zawodnicy" asp-action="Edit" asp-route-id="@z.IdZawodnika">Edytuj<span class="visually-hidden"> @z.PelneImie</span></a>
+                                        <a class="btn btn-outline-danger btn-sm" asp-controller="Zawodnicy" asp-action="Delete" asp-route-id="@z.IdZawodnika">Usuń<span class="visually-hidden"> @z.PelneImie</span></a>
+                                    </td>
+                                }
+                            </tr>
+                        }
+                        @if (!Model.Zawodnicy.Any())
+                        {
+                            <tr><td colspan="5" class="text-body-secondary">Brak zgłoszonych zawodników.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @if (!pelny)
+            {
+                <div class="card-footer small text-body-secondary">Nazwiska zawodników są skrócone zgodnie z RODO – pełne dane widzą członkowie drużyny.</div>
+            }
+        </section>
+
+        <section class="card" aria-labelledby="mecze-tytul">
+            <h2 class="card-header h6 mb-0" id="mecze-tytul">Mecze drużyny</h2>
+            <partial name="_ListaMeczow" model="mecze" view-data='new ViewDataDictionary(ViewData) { { "Podpis", "Mecze drużyny " + Model.Nazwa }, { "Wyroznij", mojeIds } }' />
+        </section>
+    </div>
+</div>

@@ -1,0 +1,14 @@
+@model Druzyna
+@{ ViewData["Title"] = "Usuwanie drużyny"; }
+
+<h1 class="h3 mb-3">Usunąć drużynę?</h1>
+<div class="card border-danger"><div class="card-body">
+    <h2 class="h5">@Model.Nazwa</h2>
+    <p class="mb-1">@Model.Miasto · @Model.Turniej?.Nazwa</p>
+    <p class="text-warning">Zostaną też usunięci zawodnicy (@Model.Zawodnicy.Count) i mecze drużyny (@ViewBag.LiczbaMeczow).</p>
+    <form asp-action="Delete" method="post" class="d-flex gap-2">
+        <input type="hidden" asp-for="IdDruzyny" />
+        <button type="submit" class="btn btn-danger">Usuń</button>
+        <a asp-action="Details" asp-route-id="@Model.IdDruzyny" class="btn btn-outline-light">Anuluj</a>
+    </form>
+</div></div>

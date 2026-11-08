@@ -1,0 +1,71 @@
+@model IEnumerable<Zawodnik>
+@{ ViewData["Title"] = "Zawodnicy"; }
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <h1 class="h3 mb-0">Zawodnicy</h1>
+    @if (User.IsInRole(Role.Admin) || User.IsInRole(Role.Kapitan))
+    {
+        <a class="btn btn-accent" asp-action="Create">+ Dodaj zawodnika</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-sm-6 col-md-4">
+        <label for="filtrDruzyna" class="visually-hidden">Filtruj według drużyny</label>
+        <select id="filtrDruzyna" name="druzynaId" asp-items="ViewBag.DruzynaId" class="form-select">
+            <option value="">Wszystkie drużyny</option>
+        </select>
+    </div>
+    <div class="col-sm-6 col-md-4">
+        <label for="szukaj" class="visually-hidden">Szukaj zawodnika</label>
+        <input type="search" id="szukaj" name="szukaj" value="@ViewBag.Szukaj" class="form-control" placeholder="Szukaj: imię, drużyna, pozycja" />
+    </div>
+    <input type="hidden" name="sort" value="@Context.Request.Query["sort"]" />
+    <input type="hidden" name="kier" value="@Context.Request.Query["kier"]" />
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-accent">Filtruj</button>
+    </div>
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">Lista zawodników</caption>
+            <thead>
+                <tr>
+                    <th sortuj="nr">Nr</th>
+                    <th sortuj="zawodnik">Zawodnik</th>
+                    <th sortuj="pozycja">Pozycja</th>
+                    <th sortuj="druzyna">Drużyna</th>
+                    <th sortuj="turniej" class="d-none d-md-table-cell">Turniej</th>
+                    <th scope="col"><span class="visually-hidden">Akcje</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var z in Model)
+                {
+                    var moze = Maskowanie.MozeZarzadzac(User, z.Druzyna);
+                    <tr>
+                        <td class="fw-bold text-accent">@z.NumerKoszulki</td>
+                        <td><a asp-action="Details" asp-route-id="@z.IdZawodnika">@Maskowanie.Zawodnik(User, z)</a></td>
+                        <td>@z.Pozycja.NazwaWyswietlana()</td>
+                        <td><a asp-controller="Druzyny" asp-action="Details" asp-route-id="@z.DruzynaId">@z.Druzyna?.Nazwa</a></td>
+                        <td class="d-none d-md-table-cell">@z.Druzyna?.Turniej?.Nazwa</td>
+                        <td class="text-end text-nowrap">
+                            @if (moze)
+                            {
+                                <a class="btn btn-outline-light btn-sm" asp-action="Edit" asp-route-id="@z.IdZawodnika">Edytuj</a>
+                                <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@z.IdZawodnika">Usuń</a>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-body-secondary">Brak zawodników.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer small text-body-secondary">Osoby spoza drużyny widzą tylko imię i pierwszą literę nazwiska (RODO, art. 32).</div>
+</div>

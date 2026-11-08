@@ -1,0 +1,52 @@
+@model IEnumerable<Turniej>
+@{ ViewData["Title"] = "Turnieje"; }
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
+    <h1 class="h3 mb-0">Turnieje</h1>
+    @if (User.IsInRole(Role.Admin))
+    {
+        <a class="btn btn-accent" asp-action="Create">+ Nowy turniej</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3 align-items-end">
+    <div class="col-sm-6 col-lg-4">
+        <label for="szukaj" class="form-label small mb-1">Szukaj</label>
+        <input type="search" id="szukaj" name="szukaj" value="@ViewBag.Szukaj" class="form-control" placeholder="Nazwa lub lokalizacja" />
+    </div>
+    <div class="col-sm-6 col-lg-3">
+        <label for="filtrStatus" class="form-label small mb-1">Status</label>
+        <select id="filtrStatus" name="status" class="form-select" asp-items="Html.GetEnumSelectList<StatusTurnieju>()">
+            <option value="">Wszystkie</option>
+        </select>
+    </div>
+    <div class="col-6 col-lg-2">
+        <label for="sort" class="form-label small mb-1">Sortuj według</label>
+        <select id="sort" name="sort" class="form-select">
+            <option value="data" selected="@(ViewBag.Sort == null || ViewBag.Sort == "data")">Data rozpoczęcia</option>
+            <option value="nazwa" selected="@(ViewBag.Sort == "nazwa")">Nazwa</option>
+            <option value="druzyny" selected="@(ViewBag.Sort == "druzyny")">Liczba drużyn</option>
+        </select>
+    </div>
+    <div class="col-6 col-lg-2">
+        <label for="kier" class="form-label small mb-1">Kierunek</label>
+        <select id="kier" name="kier" class="form-select">
+            <option value="asc">Rosnąco</option>
+            <option value="desc" selected="@(ViewBag.Kier == "desc")">Malejąco</option>
+        </select>
+    </div>
+    <div class="col-auto"><button type="submit" class="btn btn-outline-accent">Pokaż</button></div>
+</form>
+
+<div class="row g-3">
+    @foreach (var t in Model)
+    {
+        <div class="col-md-6 col-lg-4">
+            <partial name="_KartaTurnieju" model="t" />
+        </div>
+    }
+    @if (!Model.Any())
+    {
+        <p class="text-body-secondary">Brak turniejów.</p>
+    }
+</div>
