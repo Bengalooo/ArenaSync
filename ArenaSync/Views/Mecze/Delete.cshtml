@@ -1,0 +1,15 @@
+@model Mecz
+@{ ViewData["Title"] = "Usuwanie meczu"; }
+
+<h1 class="h3 mb-3">Usunąć mecz?</h1>
+<div class="card border-danger"><div class="card-body">
+    <h2 class="h5">@Model.Gospodarz?.Nazwa – @Model.Gosc?.Nazwa</h2>
+    <p>@Model.Turniej?.Nazwa · @Model.Termin.ToString("g")
+        @if (Model.Rozegrany) { <span>· wynik @Model.BramkiGospodarza:@Model.BramkiGoscia</span> }
+    </p>
+    <form asp-action="Delete" method="post" class="d-flex gap-2">
+        <input type="hidden" asp-for="IdMeczu" />
+        <button type="submit" class="btn btn-danger">Usuń</button>
+        <a asp-controller="Turnieje" asp-action="Details" asp-route-id="@Model.TurniejId" class="btn btn-outline-light">Anuluj</a>
+    </form>
+</div></div>
