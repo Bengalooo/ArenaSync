@@ -1,0 +1,38 @@
+@model Zawodnik
+@{
+    ViewData["Title"] = "Zawodnik";
+    var moze = (bool)ViewBag.MozeZarzadzac;
+    var pelny = Maskowanie.PelnyWglad(User, Model.Druzyna);
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="stat">#@Model.NumerKoszulki</div>
+                    <div>
+                        <h1 class="h4 mb-0">@(pelny ? Model.PelneImie : Maskowanie.Nazwisko(Model.Imie, Model.Nazwisko))</h1>
+                        <span class="text-body-secondary">@Model.Pozycja.NazwaWyswietlana()</span>
+                    </div>
+                </div>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Drużyna</dt>
+                    <dd class="col-sm-8"><a asp-controller="Druzyny" asp-action="Details" asp-route-id="@Model.DruzynaId">@Model.Druzyna?.Nazwa</a></dd>
+                    @if (pelny)
+                    {
+                        <dt class="col-sm-4">Data urodzenia</dt>
+                        <dd class="col-sm-8">@Model.DataUrodzenia.ToString("d")</dd>
+                    }
+                </dl>
+                @if (moze)
+                {
+                    <div class="mt-3 d-flex gap-2">
+                        <a class="btn btn-outline-light" asp-action="Edit" asp-route-id="@Model.IdZawodnika">Edytuj</a>
+                        <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model.IdZawodnika">Usuń</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

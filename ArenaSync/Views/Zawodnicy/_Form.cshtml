@@ -1,0 +1,36 @@
+@model Zawodnik
+<div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+<div class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Imie" class="form-label"></label>
+        <input asp-for="Imie" class="form-control" />
+        <span asp-validation-for="Imie" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Nazwisko" class="form-label"></label>
+        <input asp-for="Nazwisko" class="form-control" />
+        <span asp-validation-for="Nazwisko" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="DruzynaId" class="form-label"></label>
+        <select asp-for="DruzynaId" asp-items="ViewBag.DruzynaId" class="form-select">
+            <option value="">-- wybierz drużynę --</option>
+        </select>
+        <span asp-validation-for="DruzynaId" class="small"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="DataUrodzenia" class="form-label"></label>
+        <input asp-for="DataUrodzenia" class="form-control" />
+        <span asp-validation-for="DataUrodzenia" class="small"></span>
+    </div>
+    <div class="col-sm-6">
+        <label asp-for="Pozycja" class="form-label"></label>
+        <select asp-for="Pozycja" asp-items="Html.GetEnumSelectList<Pozycja>()" class="form-select"></select>
+        <span asp-validation-for="Pozycja" class="small"></span>
+    </div>
+    <div class="col-sm-6">
+        <label asp-for="NumerKoszulki" class="form-label"></label>
+        <input asp-for="NumerKoszulki" class="form-control" />
+        <span asp-validation-for="NumerKoszulki" class="small"></span>
+    </div>
+</div>
