@@ -1,0 +1,69 @@
+@model IEnumerable<Uwaga>
+@{
+    var admin = User.IsInRole(Role.Admin);
+    ViewData["Title"] = admin ? "Zgłoszone uwagi" : "Moje zgłoszenia";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-2 gap-2">
+    <h1 class="h3 mb-0">@ViewData["Title"]</h1>
+    <a class="btn btn-accent" asp-action="Create">+ Zgłoś uwagę</a>
+</div>
+<p class="text-body-secondary mb-3">
+    @if (admin) { <text>Uwagi użytkowników: błędy, propozycje i pytania. Otwórz zgłoszenie, żeby odpowiedzieć i zmienić status.</text> }
+    else { <text>Twoje uwagi wysłane do administratora i jego odpowiedzi.</text> }
+</p>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-sm-4 col-md-3">
+        <label for="filtrStatus" class="visually-hidden">Filtruj według statusu</label>
+        <select id="filtrStatus" name="status" class="form-select" asp-items="Html.GetEnumSelectList<StatusUwagi>()">
+            <option value="">Wszystkie statusy</option>
+        </select>
+    </div>
+    <div class="col-sm-4 col-md-3">
+        <label for="filtrKategoria" class="visually-hidden">Filtruj według kategorii</label>
+        <select id="filtrKategoria" name="kategoria" class="form-select" asp-items="Html.GetEnumSelectList<KategoriaUwagi>()">
+            <option value="">Wszystkie kategorie</option>
+        </select>
+    </div>
+    <div class="col-sm-4 col-md-3">
+        <label for="szukaj" class="visually-hidden">Szukaj w zgłoszeniach</label>
+        <input type="search" id="szukaj" name="szukaj" value="@ViewBag.Szukaj" class="form-control" placeholder="Szukaj: temat, opis@(admin ? ", autor" : "")" />
+    </div>
+    <input type="hidden" name="sort" value="@Context.Request.Query["sort"]" />
+    <input type="hidden" name="kier" value="@Context.Request.Query["kier"]" />
+    <div class="col-auto"><button type="submit" class="btn btn-outline-accent">Filtruj</button></div>
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">@ViewData["Title"]</caption>
+            <thead>
+                <tr>
+                    <th sortuj="data">Data</th>
+                    <th sortuj="temat">Temat</th>
+                    <th sortuj="kategoria" class="d-none d-md-table-cell">Kategoria</th>
+                    @if (admin) { <th sortuj="autor">Zgłaszający</th> }
+                    <th sortuj="status">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td class="text-nowrap small"><time datetime="@u.DataZgloszenia.ToString("s")">@u.DataZgloszenia.ToString("dd.MM.yyyy HH:mm")</time></td>
+                        <td><a asp-action="Details" asp-route-id="@u.IdUwagi" class="fw-semibold">@u.Temat</a></td>
+                        <td class="d-none d-md-table-cell">@u.Kategoria.NazwaWyswietlana()</td>
+                        @if (admin) { <td>@(u.Autor?.ImieNazwisko ?? u.Autor?.Email)</td> }
+                        <td><partial name="_Status" model="u.Status" /></td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="@(admin ? 5 : 4)" class="text-body-secondary">Brak zgłoszeń.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

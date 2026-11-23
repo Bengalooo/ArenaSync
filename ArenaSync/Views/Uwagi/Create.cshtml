@@ -1,0 +1,36 @@
+@model Uwaga
+@{ ViewData["Title"] = "Zgłoś uwagę"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-9 col-lg-7">
+        <h1 class="h3 mb-2">Zgłoś uwagę</h1>
+        <p class="text-body-secondary">Znalazłeś błąd, masz pomysł albo pytanie? Napisz do administratora. Odpowiedź zobaczysz w „Moich zgłoszeniach”.</p>
+        <div class="card"><div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="ModelOnly" class="mb-2" role="alert"></div>
+                <div class="mb-3">
+                    <label asp-for="Kategoria" class="form-label"></label>
+                    <select asp-for="Kategoria" asp-items="Html.GetEnumSelectList<KategoriaUwagi>()" class="form-select"></select>
+                    <span asp-validation-for="Kategoria" class="small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Temat" class="form-label"></label>
+                    <input asp-for="Temat" class="form-control" maxlength="100" />
+                    <span asp-validation-for="Temat" class="small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Tresc" class="form-label"></label>
+                    <textarea asp-for="Tresc" class="form-control" rows="6" maxlength="2000" aria-describedby="trescOpis"></textarea>
+                    <div class="form-text" id="trescOpis">Opisz, co się stało i gdzie (np. nazwa strony, drużyny lub meczu). Od 10 do 2000 znaków.</div>
+                    <span asp-validation-for="Tresc" class="small"></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent">Wyślij</button>
+                    <a asp-action="Index" class="btn btn-outline-light">Anuluj</a>
+                </div>
+            </form>
+        </div></div>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
