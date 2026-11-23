@@ -1,0 +1,15 @@
+@model ResetHaslaViewModel
+@{ ViewData["Title"] = "Hasło tymczasowe"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h1 class="h3 mb-3">Hasło tymczasowe</h1>
+        <div class="card"><div class="card-body">
+            <p>Konto <strong>@Model.Email</strong> jest odblokowane. Nowe hasło tymczasowe:</p>
+            <p class="fs-4 font-monospace fw-bold mb-3" id="hasloTymczasowe">@ViewBag.Haslo</p>
+            <p class="small text-body-secondary">Hasło jest widoczne tylko teraz. Przekaż je użytkownikowi i poproś, żeby po zalogowaniu
+                zmienił je w „Ustawieniach konta”.</p>
+            <a asp-action="Index" class="btn btn-accent">Wróć do listy użytkowników</a>
+        </div></div>
+    </div>
+</div>

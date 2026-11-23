@@ -1,0 +1,70 @@
+@model UzytkownikViewModel
+@{ ViewData["Title"] = "Edycja konta"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h1 class="h3 mb-3">Edycja konta</h1>
+        <div class="card"><div class="card-body">
+            <p class="mb-3"><strong>@Model.Email</strong></p>
+            <form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                <div asp-validation-summary="ModelOnly" class="mb-2" role="alert"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="mb-3">
+                    <label asp-for="ImieNazwisko" class="form-label"></label>
+                    <input asp-for="ImieNazwisko" class="form-control" />
+                    <span asp-validation-for="ImieNazwisko" class="small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Rola" class="form-label"></label>
+                    <select asp-for="Rola" asp-items="(IEnumerable<SelectListItem>)ViewBag.Role" class="form-select"></select>
+                    <span asp-validation-for="Rola" class="small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="DruzynaId" class="form-label"></label>
+                    <select asp-for="DruzynaId" asp-items="ViewBag.DruzynaId" class="form-select" aria-describedby="druzynaOpis">
+                        <option value="">— brak —</option>
+                    </select>
+                    <div class="form-text" id="druzynaOpis">Dotyczy roli Zawodnik. Kapitana przypisujesz w edycji drużyny.</div>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent">Zapisz</button>
+                    <a asp-action="Index" class="btn btn-outline-light">Anuluj</a>
+                </div>
+            </form>
+        </div></div>
+
+        <section class="card mt-3" aria-labelledby="bezpieczenstwo">
+            <div class="card-body">
+                <h2 class="h5" id="bezpieczenstwo">Bezpieczeństwo konta</h2>
+                <p class="mb-2">
+                    Stan:
+                    @if (Model.Zablokowane) { <span class="badge badge-blad">✕ Zablokowane</span> }
+                    else { <span class="badge badge-ok">✓ Aktywne</span> }
+                </p>
+                @if (Model.BlokadaWlaczona)
+                {
+                    <p class="small text-body-secondary">Błędne hasła od ostatniego logowania: @Model.NieudaneProby z 3. Po trzecim konto blokuje się do odblokowania przez administratora.</p>
+                }
+                else
+                {
+                    <p class="small text-body-secondary">Konto administratora – nie jest blokowane po błędnych hasłach.</p>
+                }
+                <div class="d-flex flex-wrap gap-2">
+                    @if (Model.Zablokowane)
+                    {
+                        <form asp-action="Odblokuj" asp-route-id="@Model.Id" asp-route-returnUrl="@Context.Request.Path" method="post">
+                            <button type="submit" class="btn btn-success">Odblokuj konto</button>
+                        </form>
+                    }
+                    else if (Model.BlokadaWlaczona)
+                    {
+                        <form asp-action="Zablokuj" asp-route-id="@Model.Id" asp-route-returnUrl="@Context.Request.Path" method="post">
+                            <button type="submit" class="btn btn-outline-danger">Zablokuj konto</button>
+                        </form>
+                    }
+                    <a class="btn btn-outline-light" asp-action="ResetHasla" asp-route-id="@Model.Id">Resetuj hasło</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

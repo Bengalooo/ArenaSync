@@ -1,0 +1,20 @@
+@model ApplicationUser
+@{
+    ViewData["Title"] = "Usuwanie konta";
+    var prowadzone = (List<string>)ViewBag.Prowadzone;
+}
+
+<h1 class="h3 mb-3">Usunąć konto?</h1>
+<div class="card border-danger"><div class="card-body">
+    <h2 class="h5">@(Model.ImieNazwisko ?? Model.Email)</h2>
+    <p class="mb-1">@Model.Email · @Role.Nazwa(ViewBag.Rola as string ?? "")</p>
+    @if (Model.Druzyna != null) { <p class="mb-1">Drużyna: @Model.Druzyna.Nazwa</p> }
+    @if (prowadzone.Any())
+    {
+        <p class="text-warning">Drużyny @string.Join(", ", prowadzone) zostaną bez kapitana.</p>
+    }
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-danger">Usuń konto</button>
+        <a asp-action="Index" class="btn btn-outline-light">Anuluj</a>
+    </form>
+</div></div>
