@@ -1,0 +1,90 @@
+@model StatystykiViewModel
+@{
+    ViewData["Title"] = "Statystyki";
+    var s = Model.Turniej;
+    string Mecz(Mecz? m) => m == null ? "—" : $"{m.Gospodarz?.Nazwa} {m.BramkiGospodarza}:{m.BramkiGoscia} {m.Gosc?.Nazwa}";
+    string Procent(int czesc) => s.MeczeRozegrane == 0 ? "0%" : $"{Math.Round(100.0 * czesc / s.MeczeRozegrane)}%";
+}
+
+<h1 class="h3 mb-3">Statystyki</h1>
+
+@if (Model.TurniejId == null)
+{
+    <p class="text-body-secondary">Brak turniejów.</p>
+}
+else
+{
+    <form method="get" class="row g-2 mb-3 align-items-end">
+        <div class="col-sm-8 col-md-5">
+            <label for="turniejId" class="form-label small mb-1">Turniej</label>
+            <select id="turniejId" name="turniejId" asp-items="Model.Turnieje" class="form-select"></select>
+        </div>
+        <div class="col-auto"><button type="submit" class="btn btn-outline-accent">Pokaż</button></div>
+    </form>
+
+    <h2 class="h5 mb-3">@Model.NazwaTurnieju</h2>
+    <div class="row g-3 mb-4 text-center">
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><div class="stat">@s.Druzyny</div>drużyny</div></div></div>
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><div class="stat">@s.MeczeRozegrane / @s.MeczeWszystkie</div>mecze rozegrane</div></div></div>
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><div class="stat">@s.Bramki</div>bramki</div></div></div>
+        <div class="col-6 col-md-3"><div class="card h-100"><div class="card-body"><div class="stat">@s.SredniaBramek.ToString("0.##")</div>bramki na mecz</div></div></div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-6 col-lg-4">
+            <partial name="_Ranking" model='("Najlepszy atak", "bramki zdobyte", s.NajlepszyAtak)' />
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <partial name="_Ranking" model='("Najlepsza obrona", "bramki stracone", s.NajlepszaObrona)' />
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <partial name="_Ranking" model='("Najwięcej zwycięstw", "zwycięstwa", s.NajwiecejZwyciestw)' />
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+            <section class="card h-100" aria-labelledby="mecze-tytul">
+                <h3 class="card-header h6 mb-0" id="mecze-tytul">Mecze</h3>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-6">Wygrane gospodarzy</dt><dd class="col-sm-6">@s.WygraneGospodarzy (@Procent(s.WygraneGospodarzy))</dd>
+                        <dt class="col-sm-6">Remisy</dt><dd class="col-sm-6">@s.Remisy (@Procent(s.Remisy))</dd>
+                        <dt class="col-sm-6">Wygrane gości</dt><dd class="col-sm-6">@s.WygraneGosci (@Procent(s.WygraneGosci))</dd>
+                        <dt class="col-sm-6">Najwyższe zwycięstwo</dt><dd class="col-sm-6">@Mecz(s.NajwyzszeZwyciestwo)</dd>
+                        <dt class="col-sm-6">Najwięcej bramek w meczu</dt><dd class="col-sm-6 mb-0">@Mecz(s.NajwiecejBramek)</dd>
+                    </dl>
+                </div>
+            </section>
+        </div>
+        <div class="col-lg-6">
+            <section class="card h-100" aria-labelledby="kadry-tytul">
+                <h3 class="card-header h6 mb-0" id="kadry-tytul">Zawodnicy</h3>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-6">Zgłoszeni zawodnicy</dt><dd class="col-sm-6">@s.Zawodnicy</dd>
+                        <dt class="col-sm-6">Średni wiek</dt><dd class="col-sm-6">@(s.SredniWiek?.ToString("0.#") ?? "—") @(s.SredniWiek != null ? "lat" : "")</dd>
+                        @foreach (var (pozycja, liczba) in s.ZawodnicyWgPozycji)
+                        {
+                            <dt class="col-sm-6">@pozycja</dt><dd class="col-sm-6">@liczba</dd>
+                        }
+                    </dl>
+                </div>
+            </section>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole(Role.Admin))
+{
+    <h2 class="h5 mb-3">System (widoczne tylko dla administratora)</h2>
+    <div class="row g-3 text-center">
+        @foreach (var (rola, liczba) in Model.KontaWgRoli)
+        {
+            <div class="col-6 col-md-2"><div class="card h-100"><div class="card-body"><div class="stat">@liczba</div>@rola</div></div></div>
+        }
+        <div class="col-6 col-md-2"><div class="card h-100"><div class="card-body"><div class="stat">@Model.KontaZablokowane</div><a asp-controller="Uzytkownicy" asp-action="Index" asp-route-status="zablokowane">konta zablokowane</a></div></div></div>
+        <div class="col-6 col-md-2"><div class="card h-100"><div class="card-body"><div class="stat">@Model.DruzynyOczekujace</div><a asp-controller="Home" asp-action="Index">drużyny do zatwierdzenia</a></div></div></div>
+        <div class="col-6 col-md-2"><div class="card h-100"><div class="card-body"><div class="stat">@Model.UwagiNowe</div><a asp-controller="Uwagi" asp-action="Index" asp-route-status="Nowa">nowe uwagi</a></div></div></div>
+    </div>
+}
