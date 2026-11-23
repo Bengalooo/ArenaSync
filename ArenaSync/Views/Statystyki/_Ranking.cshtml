@@ -1,0 +1,22 @@
+@model (string Tytul, string Miara, List<(string Nazwa, int Wartosc)> Wiersze)
+<section class="card h-100">
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <caption class="caption-top px-3 pt-2 pb-1 fw-semibold text-body">@Model.Tytul</caption>
+            <thead>
+                <tr><th scope="col">#</th><th scope="col">Drużyna</th><th scope="col" class="text-end">@Model.Miara</th></tr>
+            </thead>
+            <tbody>
+                @{ int i = 1; }
+                @foreach (var (nazwa, wartosc) in Model.Wiersze)
+                {
+                    <tr><td>@(i++)</td><th scope="row" class="fw-normal">@nazwa</th><td class="text-end fw-bold">@wartosc</td></tr>
+                }
+                @if (!Model.Wiersze.Any())
+                {
+                    <tr><td colspan="3" class="text-body-secondary">Brak rozegranych meczów.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
