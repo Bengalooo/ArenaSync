@@ -1,0 +1,8 @@
+@* Status zgłoszenia: zawsze tekst + symbol, nie tylko kolor *@
+@model StatusUwagi
+@switch (Model)
+{
+    case StatusUwagi.Nowa: <span class="badge badge-czeka">● Nowa</span> break;
+    case StatusUwagi.WTrakcie: <span class="badge bg-accent">⏳ W trakcie</span> break;
+    default: <span class="badge badge-ok">✓ Rozwiązana</span> break;
+}

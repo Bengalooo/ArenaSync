@@ -1,0 +1,12 @@
+@model Uwaga
+@{ ViewData["Title"] = "Usuwanie zgłoszenia"; }
+
+<h1 class="h3 mb-3">Usunąć zgłoszenie?</h1>
+<div class="card border-danger"><div class="card-body">
+    <h2 class="h5">@Model.Temat</h2>
+    <p class="mb-1">@Model.Kategoria.NazwaWyswietlana() · @(Model.Autor?.ImieNazwisko ?? Model.Autor?.Email) · @Model.DataZgloszenia.ToString("dd.MM.yyyy HH:mm")</p>
+    <form asp-action="Delete" asp-route-id="@Model.IdUwagi" method="post" class="d-flex gap-2 mt-3">
+        <button type="submit" class="btn btn-danger">Usuń zgłoszenie</button>
+        <a asp-action="Details" asp-route-id="@Model.IdUwagi" class="btn btn-outline-light">Anuluj</a>
+    </form>
+</div></div>

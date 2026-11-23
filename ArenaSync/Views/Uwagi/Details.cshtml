@@ -1,0 +1,63 @@
+@model Uwaga
+@{
+    ViewData["Title"] = "Zgłoszenie: " + Model.Temat;
+    var admin = User.IsInRole(Role.Admin);
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <p class="mb-2"><a asp-action="Index">← @(admin ? "Zgłoszone uwagi" : "Moje zgłoszenia")</a></p>
+        <h1 class="h3 mb-2">@Model.Temat</h1>
+        <p class="mb-3">
+            <partial name="_Status" model="Model.Status" />
+            <span class="text-body-secondary ms-2">@Model.Kategoria.NazwaWyswietlana() · zgłoszono <time datetime="@Model.DataZgloszenia.ToString("s")">@Model.DataZgloszenia.ToString("dd.MM.yyyy HH:mm")</time></span>
+            @if (admin) { <span class="text-body-secondary"> · @(Model.Autor?.ImieNazwisko) (@Model.Autor?.Email)</span> }
+        </p>
+
+        <section class="card mb-3" aria-labelledby="tresc-tytul">
+            <div class="card-body">
+                <h2 class="h6" id="tresc-tytul">Opis</h2>
+                <p class="mb-0" style="white-space: pre-line">@Model.Tresc</p>
+            </div>
+        </section>
+
+        <section class="card mb-3" aria-labelledby="odpowiedz-tytul">
+            <div class="card-body">
+                <h2 class="h6" id="odpowiedz-tytul">Odpowiedź administratora</h2>
+                @if (Model.Odpowiedz != null)
+                {
+                    <p style="white-space: pre-line">@Model.Odpowiedz</p>
+                    <p class="small text-body-secondary mb-0">Odpowiedziano <time datetime="@Model.DataOdpowiedzi?.ToString("s")">@Model.DataOdpowiedzi?.ToString("dd.MM.yyyy HH:mm")</time></p>
+                }
+                else
+                {
+                    <p class="text-body-secondary mb-0">Brak odpowiedzi – administrator jeszcze się tym nie zajął.</p>
+                }
+            </div>
+        </section>
+
+        @if (admin)
+        {
+            <section class="card" aria-labelledby="obsluga-tytul">
+                <div class="card-body">
+                    <h2 class="h6" id="obsluga-tytul">Obsługa zgłoszenia</h2>
+                    <form asp-action="Odpowiedz" asp-route-id="@Model.IdUwagi" method="post">
+                        <div asp-validation-summary="All" class="mb-2" role="alert"></div>
+                        <div class="mb-3">
+                            <label for="odpowiedz" class="form-label">Odpowiedź dla zgłaszającego</label>
+                            <textarea id="odpowiedz" name="odpowiedz" class="form-control" rows="4" maxlength="2000">@Model.Odpowiedz</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select id="status" name="status" class="form-select" asp-items="Html.GetEnumSelectList<StatusUwagi>().Select(i => { i.Selected = i.Value == ((int)Model.Status).ToString(); return i; })"></select>
+                        </div>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="submit" class="btn btn-accent">Zapisz</button>
+                            <a asp-action="Delete" asp-route-id="@Model.IdUwagi" class="btn btn-outline-danger">Usuń zgłoszenie</a>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        }
+    </div>
+</div>
