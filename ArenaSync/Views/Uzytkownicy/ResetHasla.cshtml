@@ -1,0 +1,37 @@
+@model ResetHaslaViewModel
+@{ ViewData["Title"] = "Reset hasła"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <h1 class="h3 mb-3">Reset hasła</h1>
+        <div class="card"><div class="card-body">
+            <p class="mb-3">Konto: <strong>@Model.Email</strong></p>
+            <p class="small text-body-secondary" id="resetOpis">
+                Wpisz nowe hasło albo zostaw pola puste, a system wygeneruje hasło tymczasowe.
+                Reset odblokowuje konto i wylogowuje użytkownika z otwartych sesji.
+                Przekaż hasło użytkownikowi (np. w odpowiedzi na jego e-mail) i poproś o zmianę w „Ustawieniach konta”.
+            </p>
+            <form asp-action="ResetHasla" asp-route-id="@Model.Id" method="post">
+                <div asp-validation-summary="ModelOnly" class="mb-2" role="alert"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="mb-3">
+                    <label asp-for="NoweHaslo" class="form-label"></label>
+                    <input asp-for="NoweHaslo" class="form-control" autocomplete="new-password" aria-describedby="resetOpis wymagania-NoweHaslo" />
+                    <partial name="_WymaganiaHasla" model='"NoweHaslo"' />
+                    <span asp-validation-for="NoweHaslo" class="small"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PowtorzHaslo" class="form-label"></label>
+                    <input asp-for="PowtorzHaslo" class="form-control" autocomplete="new-password" />
+                    <span asp-validation-for="PowtorzHaslo" class="small"></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-accent">Ustaw hasło</button>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-light">Anuluj</a>
+                </div>
+            </form>
+        </div></div>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

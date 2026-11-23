@@ -1,0 +1,84 @@
+@model List<UzytkownikViewModel>
+@{ ViewData["Title"] = "Użytkownicy i role"; }
+
+<h1 class="h3 mb-2">Użytkownicy i role</h1>
+<p class="text-body-secondary mb-3">Administrator nadaje role, przypisuje zawodników do drużyn, odblokowuje konta zablokowane po 3 błędnych hasłach
+    i ustawia nowe hasła. Konta administratorów nie są blokowane po błędnych hasłach.</p>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-sm-4 col-md-3">
+        <label for="filtrRola" class="visually-hidden">Filtruj według roli</label>
+        <select id="filtrRola" name="rola" class="form-select">
+            <option value="">Wszystkie role</option>
+            @foreach (var r in Role.Wszystkie)
+            {
+                <option value="@r" selected="@(ViewBag.Rola == r)">@Role.Nazwa(r)</option>
+            }
+        </select>
+    </div>
+    <div class="col-sm-4 col-md-3">
+        <label for="filtrStatus" class="visually-hidden">Filtruj według stanu konta</label>
+        <select id="filtrStatus" name="status" class="form-select">
+            <option value="">Wszystkie konta</option>
+            <option value="zablokowane" selected="@(ViewBag.Status == "zablokowane")">Tylko zablokowane</option>
+        </select>
+    </div>
+    <div class="col-sm-5 col-md-4">
+        <label for="szukaj" class="visually-hidden">Szukaj po e-mailu lub nazwisku</label>
+        <input type="search" id="szukaj" name="szukaj" value="@ViewBag.Szukaj" class="form-control" placeholder="Szukaj: e-mail, nazwisko, drużyna" />
+    </div>
+    <input type="hidden" name="sort" value="@Context.Request.Query["sort"]" />
+    <input type="hidden" name="kier" value="@Context.Request.Query["kier"]" />
+    <div class="col-auto"><button type="submit" class="btn btn-outline-accent">Filtruj</button></div>
+</form>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <caption class="visually-hidden">Konta użytkowników</caption>
+            <thead>
+                <tr>
+                    <th sortuj="uzytkownik">Użytkownik</th>
+                    <th sortuj="rola">Rola</th>
+                    <th sortuj="druzyna">Drużyna</th>
+                    <th sortuj="stan">Stan konta</th>
+                    <th scope="col"><span class="visually-hidden">Akcje</span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <th scope="row" class="fw-normal">@(u.ImieNazwisko ?? "—")<br /><small class="text-body-secondary">@u.Email</small></th>
+                        <td><span class="badge @(u.Rola == Role.Admin ? "bg-accent" : u.Rola == Role.Kapitan ? "badge-czeka" : "bg-secondary")">@Role.Nazwa(u.Rola)</span></td>
+                        <td>
+                            @if (u.NazwaDruzyny != null) { <span>@u.NazwaDruzyny</span> }
+                            @if (u.ProwadzoneDruzyny.Any()) { <span>kapitan: @string.Join(", ", u.ProwadzoneDruzyny)</span> }
+                        </td>
+                        <td>
+                            @if (u.Zablokowane) { <span class="badge badge-blad">✕ Zablokowane</span> }
+                            else { <span class="badge badge-ok">✓ Aktywne</span> }
+                            @if (!u.BlokadaWlaczona) { <br /><small class="text-body-secondary">bez blokady (admin)</small> }
+                            else if (!u.Zablokowane && u.NieudaneProby > 0) { <br /><small class="text-body-secondary">błędne hasła: @u.NieudaneProby z 3</small> }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            @if (u.Zablokowane)
+                            {
+                                <form asp-action="Odblokuj" asp-route-id="@u.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-success btn-sm">Odblokuj<span class="visually-hidden"> konto @u.Email</span></button>
+                                </form>
+                            }
+                            <a class="btn btn-outline-light btn-sm" asp-action="ResetHasla" asp-route-id="@u.Id">Resetuj hasło<span class="visually-hidden"> dla @u.Email</span></a>
+                            <a class="btn btn-outline-light btn-sm" asp-action="Edit" asp-route-id="@u.Id">Edytuj<span class="visually-hidden"> konto @u.Email</span></a>
+                            <a class="btn btn-outline-danger btn-sm" asp-action="Delete" asp-route-id="@u.Id">Usuń<span class="visually-hidden"> konto @u.Email</span></a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="5" class="text-body-secondary">Brak kont.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
